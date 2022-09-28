@@ -1,0 +1,38 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: qs-user-demo
+  cloud:
+    sentinel:
+      transport:
+        dashboard: localhost:8080
+    nacos:
+      server-addr: localhost:8848
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/qs_user?useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: root
+    type: com.alibaba.druid.pool.DruidDataSource
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+logging:
+  level:
+    org.springframework.cloud.alibaba.seata.web: debug
+    com.ninng: debug
+seata:
+  registry:
+    type: nacos
+    nacos:
+      server-addr: localhost:8848
+      namespace: ""
+      group: DEFAULT_GROUP
+      username: nacos
+      password: nacos
+      application: seata-server
+  tx-service-group: seata-demo
+  service:
+    vgroup-mapping:
+      seata-demo: DG
+  data-source-proxy-mode: AT

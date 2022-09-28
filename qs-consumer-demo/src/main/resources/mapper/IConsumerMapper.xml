@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ninng.qs.consumer.mapper.IConsumerMapper">
+    <resultMap id="consumerMap" type="com.ninng.qs.consumer.domain.Consumer">
+        <id property="id" column="id"/>
+        <id property="consumerInfo" column="consumer_info"/>
+        <id property="userId" column="user_id"/>
+    </resultMap>
+    <select id="findAll" resultMap="consumerMap">
+        select *
+        from consumer;
+    </select>
+    <select id="selectById" resultMap="consumerMap">
+        select *
+        from consumer
+        where id = #{id};
+    </select>
+</mapper>
