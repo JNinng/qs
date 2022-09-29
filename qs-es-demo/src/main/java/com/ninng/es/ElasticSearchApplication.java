@@ -13,6 +13,8 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 public class ElasticSearchApplication {
 
     public static void main(String[] args) {
+        // 解决Nacos日志输出路径冲突
+        System.setProperty("nacos.logging.default.config.enabled", "false");
         SpringApplication.run(ElasticSearchApplication.class, args);
     }
 }
