@@ -9,10 +9,6 @@ spring:
         dashboard: localhost:8080
     nacos:
       server-addr: localhost:8848
-      logging:
-        default:
-          config:
-            enabled: false
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://localhost:3306/qs_comsumer?useUnicode=true&characterEncoding=utf-8
@@ -35,11 +31,6 @@ spring:
         min-idle: 0
     #连接超时时间（单位为毫秒）
     timeout: 0
-nacos:
-  logging:
-    default:
-      config:
-        enabled: false
 mybatis:
   mapper-locations: classpath:mapper/*.xml
 seata:
