@@ -7,9 +7,10 @@ spring:
     active: dev
   cloud:
     nacos:
-      discovery:
-        server-addr: localhost:8848
+      server-addr: localhost:8848
+      username: qs-demo
+      password: qs-demo
       config:
-        server-addr: localhost:8848
         file-extension: yaml
         prefix: ${spring.application.name}-application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+        namespace:
