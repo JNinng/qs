@@ -4,8 +4,10 @@
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
-    <springProperty scope="context" name="appName" source="spring.application.name"/>
-    <springProperty scope="context" name="logstash-service-id" source="spring.logstash.serviceId.consumer1"/>
+    <!--    <springProperty scope="context" name="appName" source="spring.application.name"/>-->
+    <springProperty scope="context" name="appName" source="qs-consumer"/>
+    <springProperty scope="context" name="logstash-service-id" source="spring.logstash.serviceId.consumer"/>
+    <property name="serviceName" value="qs-consumer"/>
 
     <!-- 日志在工程中的输出位置 -->
     <property name="LOG_FILE" value="${BUILD_FOLDER:-build}/${appName}"/>
@@ -30,44 +32,45 @@
     <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
         <destination>127.0.0.1:5044</destination>
         <!-- 日志输出编码 -->
-        <!--        <encoder charset="UTF-8" class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">-->
-        <!--            &lt;!&ndash;            <customFields>{"serviceId":"${logstash-service-id}"}</customFields>&ndash;&gt;-->
-        <!--            <providers>-->
-        <!--                <timestamp>-->
-        <!--                    <timeZone>UTC</timeZone>-->
-        <!--                </timestamp>-->
-        <!--                <pattern>-->
-        <!--                    <pattern>-->
-        <!--                        {-->
-        <!--                        "logLevel": "%level",-->
-        <!--                        "serviceName": "${springAppName:-}",-->
-        <!--                        "pid": "${PID:-}",-->
-        <!--                        "thread": "%thread",-->
-        <!--                        "class": "%logger{40}",-->
-        <!--                        "rest": "%message"-->
-        <!--                        }-->
-        <!--                    </pattern>-->
-        <!--                </pattern>-->
-        <!--            </providers>-->
-        <!--        </encoder>-->
-        <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder">
-            <customFields>{"serviceId":"${logstash-service-id}"}</customFields>
+        <encoder charset="UTF-8" class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <!--            <customFields>{"serviceId":"${logstash-service-id}"}</customFields>-->
             <providers>
-                <timestamp/>
-                <version/>
-                <message/>
-                <loggerName/>
-                <threadName/>
-                <logLevel/>
-                <callerData/>
+                <timestamp>
+                    <timeZone>UTC</timeZone>
+                </timestamp>
+                <pattern>
+                    <pattern>
+                        {
+                        "level": "%level",
+                        "serviceName": "${serviceName}",
+                        "pid": "${PID:-}",
+                        "thread": "%thread",
+                        "class": "%logger{40}",
+                        "msg": "%message"
+                        }
+                    </pattern>
+                </pattern>
             </providers>
         </encoder>
-        <!--<encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder"/>-->
+        <!--        <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder">-->
+        <!--            <customFields>{"serviceId":"${logstash-service-id}"}</customFields>-->
+        <!--            <providers>-->
+        <!--                <timestamp/>-->
+        <!--                <version/>-->
+        <!--                <message/>-->
+        <!--                <loggerName/>-->
+        <!--                <threadName/>-->
+        <!--                <logLevel/>-->
+        <!--                <callerData/>-->
+        <!--            </providers>-->
+        <!--        </encoder>-->
+        <!--        <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder"/>-->
     </appender>
 
     <root level="DEBUG">
         <appender-ref ref="LOGSTASH"/>
     </root>
+
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
     </root>
