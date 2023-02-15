@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="top.ninng.qs.user.mapper.ITransactionalTest">
+<mapper namespace="top.ninng.qs.user.mapper.TransactionalTest">
 
     <resultMap id="transactionalMap" type="top.ninng.qs.user.entity.TransactionalTest">
         <id property="id" column="id"/>

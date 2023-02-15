@@ -13,6 +13,7 @@
         <module>qs-consumer</module>
         <module>qs-gateway</module>
         <module>qs-es</module>
+        <module>common</module>
     </modules>
 
     <parent>

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
  * @Version 1.0
  */
 @Repository("transactionalTest")
-public interface ITransactionalTest {
+public interface TransactionalTest {
 
     /**
      * 修改测试值

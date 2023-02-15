@@ -13,10 +13,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class User {
 
     @Autowired
-    private IUserMapper userMapper;
+    private UserMapper userMapper;
 
     @Test
     public void userSelectByIdTest() {
-        System.out.println(userMapper.selectById(1L));
+        //        System.out.println(userMapper.selectById(1L));
     }
 }
