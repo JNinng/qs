@@ -4,15 +4,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.ninng</groupId>
+    <groupId>top.ninng</groupId>
     <artifactId>qs</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>qs-user-demo</module>
-        <module>qs-consumer-demo</module>
-        <module>qs-gateway-demo</module>
-        <module>qs-es-demo</module>
+        <module>qs-user</module>
+        <module>qs-consumer</module>
+        <module>qs-gateway</module>
+        <module>qs-es</module>
     </modules>
 
     <parent>
