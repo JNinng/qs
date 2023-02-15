@@ -1,0 +1,16 @@
+server:
+  port: 8402
+spring:
+  application:
+    name: qs-es
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      server-addr: localhost:8848
+      username: qs
+      password: qs
+      config:
+        server-addr: localhost:8848
+        file-extension: yaml
+        prefix: ${spring.application.name}-application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
