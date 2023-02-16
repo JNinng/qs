@@ -1,6 +1,5 @@
 package top.ninng.qs.comment.controller;
 
-import cn.dev33.satoken.stp.StpUtil;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,6 +10,7 @@ import top.ninng.qs.comment.entity.Comment;
 import top.ninng.qs.comment.entity.CommentResultItem;
 import top.ninng.qs.comment.service.ICommentService;
 import top.ninng.qs.comment.utils.Ip;
+import top.ninng.utils.EmptyCheck;
 import top.ninng.utils.IdObfuscator;
 
 import javax.servlet.http.HttpServletRequest;
@@ -42,6 +42,7 @@ public class CommentController {
 
     /**
      * 评论
+     * role:admin
      *
      * @param name      名称
      * @param email     邮箱
@@ -64,9 +65,10 @@ public class CommentController {
         long[] realParentId;
         long[] realArticleId;
 
-        if (StpUtil.isLogin()) {
+        String userId = request.getHeader("user_id");
+        if (EmptyCheck.notEmpty(userId)) {
             // 获取已登录用户 id
-            realId = new long[]{Long.parseLong((String) StpUtil.getLoginId())};
+            realId = new long[]{Long.parseLong(userId)};
         } else {
             // 游客用户使用默认 id
             realId = new long[]{defaultCommentId};
