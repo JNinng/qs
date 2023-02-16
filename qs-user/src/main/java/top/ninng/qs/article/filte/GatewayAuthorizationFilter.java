@@ -16,7 +16,7 @@ import java.io.IOException;
  */
 @Slf4j
 @Component
-@WebFilter(filterName = "gatewayFilter", urlPatterns = {"/user/**"})
+@WebFilter(filterName = "gatewayAuthorizationFilter", urlPatterns = {"/**"})
 public class GatewayAuthorizationFilter implements Filter {
 
     @Override
