@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.ninng.qs.article.mapper.ArticleMapper">
+
+    <resultMap id="BaseResultMap" type="top.ninng.qs.user.entity.Article">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="deleteStatus" column="delete_status" jdbcType="BIT"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="pageView" column="page_view" jdbcType="INTEGER"/>
+        <result property="likeNum" column="like_num" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="TINYINT"/>
+        <result property="stick" column="stick" jdbcType="TINYINT"/>
+        <result property="site" column="site" jdbcType="VARCHAR"/>
+        <result property="ip" column="ip" jdbcType="VARCHAR"/>
+        <result property="mode" column="mode" jdbcType="BIT"/>
+    </resultMap>
+
+    <resultMap id="TimelineItem" type="top.ninng.qs.user.entity.TimelineMonthItem">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="date" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <resultMap id="ArticleIdAndTitle" type="top.ninng.qs.user.entity.ArticleIdAndTitle">
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="date" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,user_id,create_time,
+        update_time,delete_status,content,
+        title,page_view,like_num,
+        status,stick,site,
+        ip,mode
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from article
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectUserIdByIdInt" resultType="java.lang.Long">
+        select user_id
+        from article
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectArticleIdListByPage" resultType="java.lang.Long">
+        select id
+        from article
+        order by update_time desc
+        limit #{l,jdbcType=INTEGER},#{r,jdbcType=INTEGER}
+    </select>
+
+    <select id="getArticleIdListByMonth" resultType="top.ninng.qs.user.entity.TimelineMonthItem"
+            resultMap="TimelineItem">
+        select title, id, create_time
+        from article
+        where year(create_time) = #{year,jdbcType=VARCHAR}
+          and month(create_time) = #{month,jdbcType=VARCHAR}
+        order by create_time desc;
+    </select>
+
+    <select id="selectTitleAndDateByPrimaryKey" resultType="top.ninng.qs.user.entity.ArticleIdAndTitle"
+            resultMap="ArticleIdAndTitle">
+        select title, create_time
+        from article
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectArticleTotal" resultType="java.lang.Integer">
+        select count(id)
+        from article
+    </select>
+
+    <select id="selectArticleByPage" resultType="top.ninng.qs.user.entity.Article" resultMap="BaseResultMap">
+        select id,
+               user_id,
+               create_time,
+               update_time,
+               delete_status,
+               title,
+               page_view,
+               like_num,
+               status,
+               stick,
+               site,
+               ip,
+               mode
+        from article
+        order by update_time desc
+        limit #{l,jdbcType=INTEGER},#{r,jdbcType=INTEGER}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from article
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="top.ninng.qs.user.entity.Article"
+            useGeneratedKeys="true">
+        insert into article
+        ( id, user_id, create_time
+        , update_time, delete_status, content
+        , title, page_view, like_num
+        , status, stick, site
+        , ip, mode)
+        values ( #{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}
+               , #{updateTime,jdbcType=TIMESTAMP}, #{deleteStatus,jdbcType=BIT}, #{content,jdbcType=VARCHAR}
+               , #{title,jdbcType=VARCHAR}, #{pageView,jdbcType=INTEGER}, #{likeNum,jdbcType=INTEGER}
+               , #{status,jdbcType=TINYINT}, #{stick,jdbcType=INTEGER}, #{site,jdbcType=VARCHAR}
+               , #{ip,jdbcType=VARCHAR}, #{mode,jdbcType=BIT})
+    </insert>
+
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="top.ninng.qs.user.entity.Article"
+            useGeneratedKeys="true">
+        insert into article
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="deleteStatus != null">delete_status,</if>
+            <if test="content != null">content,</if>
+            <if test="title != null">title,</if>
+            <if test="pageView != null">page_view,</if>
+            <if test="likeNum != null">like_num,</if>
+            <if test="status != null">status,</if>
+            <if test="stick != null">stick,</if>
+            <if test="site != null">site,</if>
+            <if test="ip != null">ip,</if>
+            <if test="mode != null">mode,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id,jdbcType=INTEGER},</if>
+            <if test="userId != null">#{userId,jdbcType=INTEGER},</if>
+            <if test="createTime != null">#{createTime,jdbcType=TIMESTAMP},</if>
+            <if test="updateTime != null">#{updateTime,jdbcType=TIMESTAMP},</if>
+            <if test="deleteStatus != null">#{deleteStatus,jdbcType=BIT},</if>
+            <if test="content != null">#{content,jdbcType=VARCHAR},</if>
+            <if test="title != null">#{title,jdbcType=VARCHAR},</if>
+            <if test="pageView != null">#{pageView,jdbcType=INTEGER},</if>
+            <if test="likeNum != null">#{likeNum,jdbcType=INTEGER},</if>
+            <if test="status != null">#{status,jdbcType=TINYINT},</if>
+            <if test="stick != null">#{stick,jdbcType=TINYINT},</if>
+            <if test="site != null">#{site,jdbcType=VARCHAR},</if>
+            <if test="ip != null">#{ip,jdbcType=VARCHAR},</if>
+            <if test="mode != null">#{mode,jdbcType=BIT},</if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="top.ninng.qs.user.entity.Article">
+        update article
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="deleteStatus != null">
+                delete_status = #{deleteStatus,jdbcType=BIT},
+            </if>
+            <if test="content != null">
+                content = #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="title != null">
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="pageView != null">
+                page_view = #{pageView,jdbcType=INTEGER},
+            </if>
+            <if test="likeNum != null">
+                like_num = #{likeNum,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=TINYINT},
+            </if>
+            <if test="stick != null">
+                stick = #{stick,jdbcType=TINYINT},
+            </if>
+            <if test="site != null">
+                site = #{site,jdbcType=VARCHAR},
+            </if>
+            <if test="ip != null">
+                ip = #{ip,jdbcType=VARCHAR},
+            </if>
+            <if test="mode != null">
+                mode = #{mode,jdbcType=BIT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="top.ninng.qs.user.entity.Article">
+        update article
+        set user_id       = #{userId,jdbcType=INTEGER},
+            create_time   = #{createTime,jdbcType=TIMESTAMP},
+            update_time   = #{updateTime,jdbcType=TIMESTAMP},
+            delete_status = #{deleteStatus,jdbcType=BIT},
+            content       = #{content,jdbcType=VARCHAR},
+            title         = #{title,jdbcType=VARCHAR},
+            page_view     = #{pageView,jdbcType=INTEGER},
+            like_num      = #{likeNum,jdbcType=INTEGER},
+            status        = #{status,jdbcType=TINYINT},
+            stick         = #{stick,jdbcType=TINYINT},
+            site          = #{site,jdbcType=VARCHAR},
+            ip            = #{ip,jdbcType=VARCHAR},
+            mode          = #{mode,jdbcType=BIT}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

@@ -36,20 +36,24 @@ public class UnifyResponse<T> implements Serializable {
         this.data = data;
     }
 
-    public static <T> UnifyResponse<T> ok(String message) {
-        return result(SUCCESS, message, null);
+    public static <T> UnifyResponse<T> ok() {
+        return result(SUCCESS, "", null);
+    }
+
+    public static <T> UnifyResponse<T> ok(T data) {
+        return result(SUCCESS, "", data);
     }
 
     public static <T> UnifyResponse<T> ok(String message, T data) {
         return result(SUCCESS, message, data);
     }
 
-    public static <T> UnifyResponse<T> ok(int code, String message, T data) {
-        return result(code, message, data);
+    public static <T> UnifyResponse<T> fail() {
+        return result(FAIL, "", null);
     }
 
-    public static <T> UnifyResponse<T> fail(String message) {
-        return result(FAIL, message, null);
+    public static <T> UnifyResponse<T> fail(T data) {
+        return result(FAIL, "", data);
     }
 
     public static <T> UnifyResponse<T> fail(String message, T data) {
