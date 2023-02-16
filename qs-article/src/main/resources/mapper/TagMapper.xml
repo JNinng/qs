@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="top.ninng.qs.article.mapper.TagMapper">
 
-    <resultMap id="BaseResultMap" type="top.ninng.qs.user.entity.Tag">
+    <resultMap id="BaseResultMap" type="top.ninng.qs.article.entity.Tag">
         <id property="id" column="id" jdbcType="INTEGER"/>
         <result property="name" column="name" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -27,7 +27,7 @@
         where id = #{id,jdbcType=INTEGER}
     </select>
 
-    <select id="selectAll" resultType="top.ninng.qs.user.entity.Tag">
+    <select id="selectAll" resultType="top.ninng.qs.article.entity.Tag">
         select
         <include refid="Base_Column_List"/>
         from tag
@@ -52,7 +52,7 @@
         where name = #{tagName,jdbcType=VARCHAR}
     </delete>
 
-    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="top.ninng.qs.user.entity.Tag"
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="top.ninng.qs.article.entity.Tag"
             useGeneratedKeys="true">
         insert into tag
         ( id, name, create_time
@@ -63,7 +63,7 @@
                , #{status,jdbcType=TINYINT})
     </insert>
 
-    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="top.ninng.qs.user.entity.Tag"
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="top.ninng.qs.article.entity.Tag"
             useGeneratedKeys="true">
         insert into tag
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -86,7 +86,7 @@
         </trim>
     </insert>
 
-    <update id="updateByPrimaryKeySelective" parameterType="top.ninng.qs.user.entity.Tag">
+    <update id="updateByPrimaryKeySelective" parameterType="top.ninng.qs.article.entity.Tag">
         update tag
         <set>
             <if test="name != null">
@@ -111,7 +111,7 @@
         where id = #{id,jdbcType=INTEGER}
     </update>
 
-    <update id="updateByPrimaryKey" parameterType="top.ninng.qs.user.entity.Tag">
+    <update id="updateByPrimaryKey" parameterType="top.ninng.qs.article.entity.Tag">
         update tag
         set name          = #{name,jdbcType=VARCHAR},
             create_time   = #{createTime,jdbcType=TIMESTAMP},
