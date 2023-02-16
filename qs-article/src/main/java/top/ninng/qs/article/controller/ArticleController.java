@@ -1,6 +1,5 @@
 package top.ninng.qs.article.controller;
 
-import cn.dev33.satoken.stp.StpUtil;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import top.ninng.entity.UnifyResponse;
@@ -11,6 +10,7 @@ import top.ninng.qs.article.entity.ArticleTimelineMonthResult;
 import top.ninng.qs.article.entity.PageInfo;
 import top.ninng.qs.article.service.IArticleService;
 import top.ninng.qs.article.utils.Ip;
+import top.ninng.utils.EmptyCheck;
 import top.ninng.utils.IdObfuscator;
 
 import javax.servlet.http.HttpServletRequest;
@@ -87,6 +87,7 @@ public class ArticleController {
 
     /**
      * 文章无正文信息分页查询
+     * role:admin
      *
      * @return 文章信息列表
      */
@@ -94,10 +95,7 @@ public class ArticleController {
     public UnifyResponse<ArrayList<Article>> getArticleListByPage(
             @RequestParam(value = "page") int page,
             @RequestParam(value = "pageSize") int pageSize) {
-        if (StpUtil.isLogin()) {
-            return iArticleService.getArticleListByPage(page, pageSize);
-        }
-        return UnifyResponse.fail("认证失败！", null);
+        return iArticleService.getArticleListByPage(page, pageSize);
     }
 
     /**
@@ -125,19 +123,18 @@ public class ArticleController {
 
     /**
      * 获取文章管理的分页信息
+     * role:admin
      *
      * @return 文章管理部分分页信息
      */
     @RequestMapping(value = "/pageInfo", method = RequestMethod.GET)
     public UnifyResponse<PageInfo> getPageInfo() {
-        if (StpUtil.isLogin()) {
-            return iArticleService.getPageInfo();
-        }
-        return UnifyResponse.fail("认证失败！", null);
+        return iArticleService.getPageInfo();
     }
 
     /**
      * 根据混淆 id 更新文章
+     * role:admin
      *
      * @param id      混淆 id
      * @param userId  混淆用户 id
@@ -153,26 +150,40 @@ public class ArticleController {
             @RequestParam(value = "content") String content,
             @RequestParam(value = "title") String title,
             HttpServletRequest request) {
-        // 判断是否登录
-        if (StpUtil.isLogin()) {
-            // 获取真实 id
-            long[] realUserId = idObfuscator.decode(userId, IdConfig.USER_ID);
-            long[] realId = idObfuscator.decode(id, IdConfig.ARTICLE_ID);
+        // 获取真实 id
+        long[] realUserId = idObfuscator.decode(userId, IdConfig.USER_ID);
+        long[] realId = idObfuscator.decode(id, IdConfig.ARTICLE_ID);
 
-            if (realUserId.length > 0 && realId.length > 0) {
-                //                // 获取当前登录用户 id
-                //                long loginId = Long.parseLong((String) StpUtil.getLoginId());
-                //                if (loginId == realUserId[0]) {
-                return iArticleService.updateArticleById(realId[0], realUserId[0], content, title,
-                        // 获取 ip
-                        Ip.getIpAddr(request));
-                //                }
-            }
-            return UnifyResponse.fail("id 错误！", null);
+        if (realUserId.length > 0 && realId.length > 0) {
+            //                // 获取当前登录用户 id
+            //                long loginId = Long.parseLong((String) StpUtil.getLoginId());
+            //                if (loginId == realUserId[0]) {
+            return iArticleService.updateArticleById(realId[0], realUserId[0], content, title,
+                    // 获取 ip
+                    Ip.getIpAddr(request));
+            //                }
         }
-        return UnifyResponse.fail("您还未登录！", null);
+        return UnifyResponse.fail("id 错误！", null);
     }
 
+    /**
+     * role:admin
+     *
+     * @param content
+     * @param id
+     * @param ip
+     * @param likeNum
+     * @param mode
+     * @param pageView
+     * @param site
+     * @param status
+     * @param stick
+     * @param title
+     * @param userId
+     * @param createTime
+     * @param updateTime
+     * @return
+     */
     @RequestMapping(value = "/updateInfo", method = RequestMethod.POST)
     public UnifyResponse<String> updateArticleInfo(
             @RequestParam(value = "content") String content,
@@ -188,32 +199,31 @@ public class ArticleController {
             @RequestParam(value = "userId") String userId,
             @RequestParam(value = "createTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date createTime,
             @RequestParam(value = "updateTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date updateTime) {
-        if (StpUtil.isLogin()) {
-            // 获取真实 id
-            long[] realUserId = idObfuscator.decode(userId, IdConfig.USER_ID);
-            long[] realId = idObfuscator.decode(id, IdConfig.ARTICLE_ID);
-            if (realUserId.length > 0 && realId.length > 0) {
-                Article article = new Article();
-                article.setId(Math.toIntExact(realId[0]));
-                article.setIp(ip);
-                article.setLikeNum(likeNum);
-                article.setMode(mode);
-                article.setPageView(pageView);
-                article.setSite(site);
-                article.setStatus(status);
-                article.setStick(stick);
-                article.setTitle(title);
-                article.setUserId(Math.toIntExact(realUserId[0]));
-                article.setCreateTime(createTime);
-                article.setUpdateTime(updateTime);
-                return iArticleService.updateArticleById(article);
-            }
+        // 获取真实 id
+        long[] realUserId = idObfuscator.decode(userId, IdConfig.USER_ID);
+        long[] realId = idObfuscator.decode(id, IdConfig.ARTICLE_ID);
+        if (realUserId.length > 0 && realId.length > 0) {
+            Article article = new Article();
+            article.setId(Math.toIntExact(realId[0]));
+            article.setIp(ip);
+            article.setLikeNum(likeNum);
+            article.setMode(mode);
+            article.setPageView(pageView);
+            article.setSite(site);
+            article.setStatus(status);
+            article.setStick(stick);
+            article.setTitle(title);
+            article.setUserId(Math.toIntExact(realUserId[0]));
+            article.setCreateTime(createTime);
+            article.setUpdateTime(updateTime);
+            return iArticleService.updateArticleById(article);
         }
-        return UnifyResponse.fail("认证失败！", null);
+        return UnifyResponse.fail("id 错误！", null);
     }
 
     /**
      * 上传文章
+     * role:admin
      *
      * @param content 正文
      * @param title   标题
@@ -224,11 +234,12 @@ public class ArticleController {
             @RequestParam(value = "content") String content,
             @RequestParam(value = "title") String title,
             HttpServletRequest request) {
-        if (StpUtil.isLogin()) {
-            // 获取当前登录用户 id
-            long loginId = Long.parseLong((String) StpUtil.getLoginId());
+        // 获取当前登录用户 id
+        String userId = request.getHeader("user_id");
+        if (EmptyCheck.notEmpty(userId)) {
+            long loginId = Long.parseLong(userId);
             return iArticleService.upload(loginId, content, title, Ip.getIpAddr(request));
         }
-        return UnifyResponse.fail("您还未登录！");
+        return UnifyResponse.fail("用户 id 错误！", null);
     }
 }

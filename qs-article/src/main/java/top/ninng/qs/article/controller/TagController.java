@@ -1,6 +1,5 @@
 package top.ninng.qs.article.controller;
 
-import cn.dev33.satoken.stp.StpUtil;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -48,20 +47,21 @@ public class TagController {
         return iTagService.addTag(tagName);
     }
 
+    /**
+     * role:admin
+     *
+     * @param tagName
+     * @return
+     */
     @RequestMapping(value = "/deleteTagByName", method = RequestMethod.POST)
     public UnifyResponse<String> deleteByName(
             @RequestParam("name") String tagName) {
-        if (StpUtil.isLogin()) {
-            long loginId = Long.parseLong((String) StpUtil.getLoginId());
-            if (loginId == rootId) {
-                return iTagService.deleteTagByName(tagName);
-            }
-        }
-        return UnifyResponse.fail("您还未登录！");
+        return iTagService.deleteTagByName(tagName);
     }
 
     /**
      * 根据 id 删除标签
+     * role:admin
      *
      * @param id 标签混淆 id
      * @return 删除结果
@@ -69,16 +69,11 @@ public class TagController {
     @RequestMapping(value = "/deleteById", method = RequestMethod.POST)
     public UnifyResponse<String> deleteTagById(
             @RequestParam("id") String id) {
-        if (StpUtil.isLogin()) {
-            long loginId = Long.parseLong((String) StpUtil.getLoginId());
-            if (loginId == rootId) {
-                long[] realId = idObfuscator.decode(id, IdConfig.TAG_ID);
-                if (realId.length > 0) {
-                    return iTagService.deleteTagById(realId[0]);
-                }
-            }
+        long[] realId = idObfuscator.decode(id, IdConfig.TAG_ID);
+        if (realId.length > 0) {
+            return iTagService.deleteTagById(realId[0]);
         }
-        return UnifyResponse.fail("您还未登录！");
+        return UnifyResponse.fail("id 错误！", null);
     }
 
     /**
@@ -117,6 +112,7 @@ public class TagController {
 
     /**
      * 根据 id 更新标签
+     * role:admin
      *
      * @param id   混淆 id
      * @param name 新标签名
@@ -126,16 +122,10 @@ public class TagController {
     public UnifyResponse<String> updateTagById(
             @RequestParam("id") String id,
             @RequestParam("name") String name) {
-        if (StpUtil.isLogin()) {
-            long loginId = Long.parseLong((String) StpUtil.getLoginId());
-            if (loginId == rootId) {
-                long[] realId = idObfuscator.decode(id, IdConfig.TAG_ID);
-                if (realId.length > 0) {
-                    return iTagService.updateTagById(realId[0], name);
-                }
-                return UnifyResponse.fail("id 错误！");
-            }
+        long[] realId = idObfuscator.decode(id, IdConfig.TAG_ID);
+        if (realId.length > 0) {
+            return iTagService.updateTagById(realId[0], name);
         }
-        return UnifyResponse.fail("您还未登录！");
+        return UnifyResponse.fail("id 错误！");
     }
 }
