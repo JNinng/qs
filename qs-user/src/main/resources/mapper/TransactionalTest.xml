@@ -2,14 +2,14 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="top.ninng.qs.article.mapper.TransactionalTest">
+<mapper namespace="top.ninng.qs.user.mapper.TransactionalTest">
 
-    <resultMap id="transactionalMap" type="top.ninng.qs.article.entity.TransactionalTest">
+    <resultMap id="transactionalMap" type="top.ninng.qs.user.entity.TransactionalTest">
         <id property="id" column="id"/>
         <id property="value" column="value"/>
     </resultMap>
 
-    <update id="update" parameterType="top.ninng.qs.article.entity.TransactionalTest">
+    <update id="update" parameterType="top.ninng.qs.user.entity.TransactionalTest">
         update qs_user.transactional_test
         set value = #{value}
         where id = #{id};

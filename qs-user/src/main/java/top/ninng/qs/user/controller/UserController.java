@@ -1,4 +1,4 @@
-package top.ninng.qs.article.controller;
+package top.ninng.qs.user.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import top.ninng.entity.UnifyResponse;
-import top.ninng.qs.article.entity.LoginResult;
-import top.ninng.qs.article.service.IUserService;
+import top.ninng.qs.user.entity.LoginResult;
+import top.ninng.qs.user.service.IUserService;
 import top.ninng.utils.IdObfuscator;
 
 /**

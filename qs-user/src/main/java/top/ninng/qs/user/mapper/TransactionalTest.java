@@ -1,4 +1,4 @@
-package top.ninng.qs.article.mapper;
+package top.ninng.qs.user.mapper;
 
 import org.springframework.stereotype.Repository;
 

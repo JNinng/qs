@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="top.ninng.qs.article.mapper.UserMapper">
+<mapper namespace="top.ninng.qs.user.mapper.UserMapper">
 
-    <resultMap id="BaseResultMap" type="top.ninng.qs.article.entity.User">
+    <resultMap id="BaseResultMap" type="top.ninng.qs.user.entity.User">
         <id property="id" column="id" jdbcType="INTEGER"/>
         <result property="userName" column="user_name" jdbcType="VARCHAR"/>
         <result property="userPassword" column="user_password" jdbcType="VARCHAR"/>
@@ -42,7 +42,7 @@
         where id = #{id,jdbcType=INTEGER}
     </delete>
 
-    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="top.ninng.qs.article.entity.User"
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="top.ninng.qs.user.entity.User"
             useGeneratedKeys="true">
         insert into user
         ( id, user_name, user_password
@@ -53,7 +53,7 @@
                , #{deleteStatus,jdbcType=BIT}, #{status,jdbcType=TINYINT}, #{headPortrait,jdbcType=VARCHAR})
     </insert>
 
-    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="top.ninng.qs.article.entity.User"
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="top.ninng.qs.user.entity.User"
             useGeneratedKeys="true">
         insert into user
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -80,7 +80,7 @@
         </trim>
     </insert>
 
-    <update id="updateByPrimaryKeySelective" parameterType="top.ninng.qs.article.entity.User">
+    <update id="updateByPrimaryKeySelective" parameterType="top.ninng.qs.user.entity.User">
         update user
         <set>
             <if test="userName != null">
@@ -111,7 +111,7 @@
         where id = #{id,jdbcType=INTEGER}
     </update>
 
-    <update id="updateByPrimaryKey" parameterType="top.ninng.qs.article.entity.User">
+    <update id="updateByPrimaryKey" parameterType="top.ninng.qs.user.entity.User">
         update user
         set user_name     = #{userName,jdbcType=VARCHAR},
             user_password = #{userPassword,jdbcType=VARCHAR},

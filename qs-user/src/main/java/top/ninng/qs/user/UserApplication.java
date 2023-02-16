@@ -1,4 +1,4 @@
-package top.ninng.qs.article;
+package top.ninng.qs.user;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;

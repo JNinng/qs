@@ -1,4 +1,4 @@
-package top.ninng.qs.article.listeners;
+package top.ninng.qs.user.listeners;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.ExchangeTypes;

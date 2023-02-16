@@ -1,4 +1,4 @@
-package top.ninng.qs.article.config;
+package top.ninng.qs.user.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

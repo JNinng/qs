@@ -1,4 +1,4 @@
-package top.ninng.qs.article.config.rabbitmq;
+package top.ninng.qs.user.config.rabbitmq;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;

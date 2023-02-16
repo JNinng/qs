@@ -1,7 +1,7 @@
-package top.ninng.qs.article.service;
+package top.ninng.qs.user.service;
 
 import top.ninng.entity.UnifyResponse;
-import top.ninng.qs.article.entity.LoginResult;
+import top.ninng.qs.user.entity.LoginResult;
 
 /**
  * 用户服务接口

@@ -1,7 +1,7 @@
-package top.ninng.qs.article.mapper;
+package top.ninng.qs.user.mapper;
 
 import org.springframework.stereotype.Repository;
-import top.ninng.qs.article.entity.User;
+import top.ninng.qs.user.entity.User;
 
 /**
  * @author OhmLaw

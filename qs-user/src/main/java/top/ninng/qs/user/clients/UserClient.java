@@ -1,9 +1,9 @@
-package top.ninng.qs.article.clients;
+package top.ninng.qs.user.clients;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import top.ninng.qs.article.entity.User;
+import top.ninng.qs.user.entity.User;
 
 /**
  * @Author OhmLaw

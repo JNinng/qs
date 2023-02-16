@@ -1,4 +1,4 @@
-package top.ninng.qs.article.config.rabbitmq;
+package top.ninng.qs.user.config.rabbitmq;
 
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;

@@ -1,4 +1,4 @@
-package top.ninng.qs.article.entity;
+package top.ninng.qs.user.entity;
 
 /**
  * 登录响应实体
