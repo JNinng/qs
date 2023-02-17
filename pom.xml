@@ -17,6 +17,7 @@
         <module>common</module>
         <module>qs-comment</module>
         <module>qs-admin</module>
+        <module>qs-file</module>
     </modules>
 
     <parent>
