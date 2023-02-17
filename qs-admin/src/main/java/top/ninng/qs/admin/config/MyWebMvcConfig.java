@@ -1,4 +1,4 @@
-package top.ninng.qs.article.config;
+package top.ninng.qs.admin.config;
 
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;

@@ -1,4 +1,4 @@
-package top.ninng.qs.article.config;
+package top.ninng.qs.file.config;
 
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
@@ -6,7 +6,9 @@ import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import top.ninng.qs.file.utils.Path;
 
 import java.nio.charset.StandardCharsets;
 
@@ -20,16 +22,16 @@ import java.nio.charset.StandardCharsets;
 @Configuration
 public class MyWebMvcConfig implements WebMvcConfigurer {
 
-    //    /**
-    //     * 配置静态资源映射
-    //     *
-    //     * @param registry
-    //     */
-    //    @Override
-    //    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-    //        registry.addResourceHandler("/img/**")
-    //                .addResourceLocations("file:///" + Path.getWorkAbsolutePath() + "/data/img/");
-    //    }
+    /**
+     * 配置静态资源映射
+     *
+     * @param registry
+     */
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/img/**")
+                .addResourceLocations("file:///" + Path.getWorkAbsolutePath() + "/data/img/");
+    }
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
