@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import top.ninng.es.domain.User;
+import top.ninng.es.entity.User;
 import top.ninng.es.service.IndexDatabaseService;
 import top.ninng.es.service.UserService;
 
@@ -18,7 +18,7 @@ import java.util.Optional;
  */
 @Controller
 @ResponseBody
-@RequestMapping("/index")
+@RequestMapping("/es/index")
 public class IndexDatabaseController {
 
     private final IndexDatabaseService indexDatabaseService;
@@ -34,5 +34,10 @@ public class IndexDatabaseController {
         indexDatabaseService.getDocumentById(id);
         Optional<User> byId = userService.findById(id);
         return byId.orElse(null);
+    }
+
+    @RequestMapping(value = "/save", method = RequestMethod.GET)
+    public void save() {
+        userService.save();
     }
 }

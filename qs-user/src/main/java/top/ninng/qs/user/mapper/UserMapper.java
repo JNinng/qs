@@ -7,7 +7,7 @@ import top.ninng.qs.user.entity.User;
  * @author OhmLaw
  * @description 针对表【user(用户信息表)】的数据库操作Mapper
  * @createDate 2023-01-01 14:20:53
- * @Entity top.ninng.entity.User
+ * @Entity top.ninng.qs.common.entity.User
  */
 @Repository("userMapper")
 public interface UserMapper {

@@ -1,12 +1,12 @@
 package top.ninng.qs.admin.service.impl;
 
 import org.springframework.stereotype.Service;
-import top.ninng.entity.UnifyResponse;
 import top.ninng.qs.admin.entity.Config;
 import top.ninng.qs.admin.mapper.ConfigMapper;
 import top.ninng.qs.admin.service.IAdminService;
 import top.ninng.qs.admin.utils.GetConfig;
-import top.ninng.utils.IdObfuscator;
+import top.ninng.qs.common.entity.UnifyResponse;
+import top.ninng.qs.common.utils.IdObfuscator;
 
 import java.util.ArrayList;
 

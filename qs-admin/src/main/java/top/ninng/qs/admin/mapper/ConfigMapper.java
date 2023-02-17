@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * @author OhmLaw
  * @description 针对表【config(配置信息)】的数据库操作Mapper
  * @createDate 2023-01-10 19:56:51
- * @Entity top.ninng.entity.Config
+ * @Entity top.ninng.qs.common.entity.Config
  */
 @Repository("configMapper")
 public interface ConfigMapper {

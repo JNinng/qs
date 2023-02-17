@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * @author OhmLaw
  * @description 针对表【comment(评论信息表)】的数据库操作Mapper
  * @createDate 2023-01-11 16:35:13
- * @Entity top.ninng.entity.Comment
+ * @Entity top.ninng.qs.common.entity.Comment
  */
 @Repository("commentMapper")
 public interface CommentMapper {

@@ -3,7 +3,7 @@ package top.ninng.qs.admin.utils;
 import org.springframework.stereotype.Component;
 import top.ninng.qs.admin.entity.Config;
 import top.ninng.qs.admin.mapper.ConfigMapper;
-import top.ninng.utils.EmptyCheck;
+import top.ninng.qs.common.utils.EmptyCheck;
 
 import java.util.ArrayList;
 import java.util.HashMap;

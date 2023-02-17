@@ -1,6 +1,6 @@
 package top.ninng.qs.user.service;
 
-import top.ninng.entity.UnifyResponse;
+import top.ninng.qs.common.entity.UnifyResponse;
 import top.ninng.qs.user.entity.LoginResult;
 
 /**

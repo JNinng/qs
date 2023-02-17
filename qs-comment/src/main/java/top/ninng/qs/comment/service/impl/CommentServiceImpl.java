@@ -1,15 +1,15 @@
 package top.ninng.qs.comment.service.impl;
 
 import org.springframework.stereotype.Service;
-import top.ninng.entity.UnifyResponse;
 import top.ninng.qs.comment.config.IdConfig;
 import top.ninng.qs.comment.entity.Comment;
 import top.ninng.qs.comment.entity.CommentResultItem;
 import top.ninng.qs.comment.mapper.CommentMapper;
 import top.ninng.qs.comment.service.ICommentService;
 import top.ninng.qs.comment.utils.Validator;
-import top.ninng.utils.EmptyCheck;
-import top.ninng.utils.IdObfuscator;
+import top.ninng.qs.common.entity.UnifyResponse;
+import top.ninng.qs.common.utils.EmptyCheck;
+import top.ninng.qs.common.utils.IdObfuscator;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
