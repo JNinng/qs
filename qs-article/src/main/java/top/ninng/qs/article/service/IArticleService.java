@@ -1,10 +1,10 @@
 package top.ninng.qs.article.service;
 
-import top.ninng.entity.UnifyResponse;
 import top.ninng.qs.article.entity.Article;
 import top.ninng.qs.article.entity.ArticleIdListPageResult;
 import top.ninng.qs.article.entity.ArticleTimelineMonthResult;
 import top.ninng.qs.article.entity.PageInfo;
+import top.ninng.qs.common.entity.UnifyResponse;
 
 import java.util.ArrayList;
 import java.util.Date;

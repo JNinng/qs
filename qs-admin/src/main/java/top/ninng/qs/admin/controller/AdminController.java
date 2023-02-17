@@ -4,9 +4,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import top.ninng.entity.UnifyResponse;
 import top.ninng.qs.admin.entity.Config;
 import top.ninng.qs.admin.service.IAdminService;
+import top.ninng.qs.common.entity.UnifyResponse;
 
 import java.util.ArrayList;
 

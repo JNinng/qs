@@ -1,8 +1,8 @@
 package top.ninng.qs.article.service;
 
-import top.ninng.entity.UnifyResponse;
 import top.ninng.qs.article.entity.ArticleIdListPageResult;
 import top.ninng.qs.article.entity.Tag;
+import top.ninng.qs.common.entity.UnifyResponse;
 
 import java.util.ArrayList;
 

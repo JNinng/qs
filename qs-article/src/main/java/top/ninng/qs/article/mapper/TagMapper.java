@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * @author OhmLaw
  * @description 针对表【tag(标签)】的数据库操作Mapper
  * @createDate 2023-01-13 19:18:52
- * @Entity top.ninng.entity.Tag
+ * @Entity top.ninng.qs.common.entity.Tag
  */
 @Repository("tagMapper")
 public interface TagMapper {

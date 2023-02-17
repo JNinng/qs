@@ -1,4 +1,4 @@
-package top.ninng.utils;
+package top.ninng.qs.common.utils;
 
 import org.hashids.Hashids;
 

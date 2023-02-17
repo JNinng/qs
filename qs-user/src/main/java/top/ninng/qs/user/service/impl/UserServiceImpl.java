@@ -2,13 +2,13 @@ package top.ninng.qs.user.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
 import org.springframework.stereotype.Service;
-import top.ninng.entity.UnifyResponse;
+import top.ninng.qs.common.entity.UnifyResponse;
+import top.ninng.qs.common.utils.EmptyCheck;
+import top.ninng.qs.common.utils.IdObfuscator;
 import top.ninng.qs.user.entity.LoginResult;
 import top.ninng.qs.user.entity.User;
 import top.ninng.qs.user.mapper.UserMapper;
 import top.ninng.qs.user.service.IUserService;
-import top.ninng.utils.EmptyCheck;
-import top.ninng.utils.IdObfuscator;
 
 /**
  * @Author OhmLaw

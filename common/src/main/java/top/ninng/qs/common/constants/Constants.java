@@ -1,4 +1,4 @@
-package top.ninng.constants;
+package top.ninng.qs.common.constants;
 
 /**
  * 常量

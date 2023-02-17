@@ -1,12 +1,12 @@
 package top.ninng.qs.article.service.impl;
 
 import org.springframework.stereotype.Service;
-import top.ninng.entity.UnifyResponse;
 import top.ninng.qs.article.config.IdConfig;
 import top.ninng.qs.article.entity.*;
 import top.ninng.qs.article.mapper.ArticleMapper;
 import top.ninng.qs.article.service.IArticleService;
-import top.ninng.utils.IdObfuscator;
+import top.ninng.qs.common.entity.UnifyResponse;
+import top.ninng.qs.common.utils.IdObfuscator;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;

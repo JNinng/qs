@@ -2,7 +2,7 @@ package top.ninng.qs.user.filte;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import top.ninng.utils.EmptyCheck;
+import top.ninng.qs.common.utils.EmptyCheck;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;

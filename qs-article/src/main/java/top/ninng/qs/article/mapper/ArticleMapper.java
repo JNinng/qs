@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * @author OhmLaw
  * @description 针对表【article(文章信息表)】的数据库操作Mapper
  * @createDate 2023-01-06 16:51:55
- * @Entity top.ninng.entity.Article
+ * @Entity top.ninng.qs.common.entity.Article
  */
 @Repository("articleMapper")
 public interface ArticleMapper {

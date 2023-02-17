@@ -4,12 +4,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import top.ninng.entity.UnifyResponse;
 import top.ninng.qs.article.config.IdConfig;
 import top.ninng.qs.article.entity.ArticleIdListPageResult;
 import top.ninng.qs.article.entity.Tag;
 import top.ninng.qs.article.service.ITagService;
-import top.ninng.utils.IdObfuscator;
+import top.ninng.qs.common.entity.UnifyResponse;
+import top.ninng.qs.common.utils.IdObfuscator;
 
 import java.util.ArrayList;
 

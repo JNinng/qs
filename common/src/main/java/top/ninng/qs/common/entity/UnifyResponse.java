@@ -1,6 +1,6 @@
-package top.ninng.entity;
+package top.ninng.qs.common.entity;
 
-import top.ninng.constants.Constants;
+import top.ninng.qs.common.constants.Constants;
 
 import java.io.Serializable;
 

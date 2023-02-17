@@ -5,7 +5,7 @@ import cn.dev33.satoken.exception.NotPermissionException;
 import cn.dev33.satoken.exception.NotRoleException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-import top.ninng.entity.UnifyResponse;
+import top.ninng.qs.common.entity.UnifyResponse;
 
 /**
  * @Author OhmLaw

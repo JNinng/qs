@@ -5,10 +5,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import top.ninng.entity.UnifyResponse;
+import top.ninng.qs.common.entity.UnifyResponse;
+import top.ninng.qs.common.utils.IdObfuscator;
 import top.ninng.qs.user.entity.LoginResult;
 import top.ninng.qs.user.service.IUserService;
-import top.ninng.utils.IdObfuscator;
 
 /**
  * 用户控制器

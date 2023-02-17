@@ -1,4 +1,4 @@
-package top.ninng.utils;
+package top.ninng.qs.common.utils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

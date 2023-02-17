@@ -1,7 +1,7 @@
 package top.ninng.qs.admin.service;
 
-import top.ninng.entity.UnifyResponse;
 import top.ninng.qs.admin.entity.Config;
+import top.ninng.qs.common.entity.UnifyResponse;
 
 import java.util.ArrayList;
 

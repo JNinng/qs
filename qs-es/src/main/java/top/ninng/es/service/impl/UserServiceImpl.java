@@ -1,12 +1,12 @@
 package top.ninng.es.service.impl;
 
-import top.ninng.es.domain.User;
-import top.ninng.es.repository.UserRepository;
-import top.ninng.es.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.stereotype.Service;
+import top.ninng.es.entity.User;
+import top.ninng.es.repository.UserRepository;
+import top.ninng.es.service.UserService;
 
 import java.util.Optional;
 
@@ -33,5 +33,17 @@ public class UserServiceImpl implements UserService {
         elasticsearchRestTemplate.get(id, User.class, IndexCoordinates.of("user"));
         byId.ifPresent(u -> log.info("User" + u));
         return byId;
+    }
+
+    @Override
+    public void save() {
+        userRepository.save(new User("1", "John名字"));
+        userRepository.save(new User("2", "天涯共此时"));
+        userRepository.save(new User("3", "海内存知己天涯若比邻"));
+        userRepository.save(new User("4", "半夜睡不着觉把心情哼成歌"));
+        userRepository.save(new User("5", "半夜睡不着觉把心情哼成歌"));
+        userRepository.save(new User("6", "半夜睡不着觉把心情哼成歌"));
+        userRepository.save(new User("7", "半夜睡不着觉把心情哼成歌"));
+        userRepository.save(new User("8", "半夜睡不着觉把心情哼成歌"));
     }
 }

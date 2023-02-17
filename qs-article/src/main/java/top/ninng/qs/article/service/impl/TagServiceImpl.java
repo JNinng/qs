@@ -2,7 +2,6 @@ package top.ninng.qs.article.service.impl;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import top.ninng.entity.UnifyResponse;
 import top.ninng.qs.article.config.IdConfig;
 import top.ninng.qs.article.entity.ArticleIdAndTitle;
 import top.ninng.qs.article.entity.ArticleIdListPageResult;
@@ -11,8 +10,9 @@ import top.ninng.qs.article.mapper.ArticleMapper;
 import top.ninng.qs.article.mapper.ArticleTagMapper;
 import top.ninng.qs.article.mapper.TagMapper;
 import top.ninng.qs.article.service.ITagService;
-import top.ninng.utils.EmptyCheck;
-import top.ninng.utils.IdObfuscator;
+import top.ninng.qs.common.entity.UnifyResponse;
+import top.ninng.qs.common.utils.EmptyCheck;
+import top.ninng.qs.common.utils.IdObfuscator;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;

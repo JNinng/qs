@@ -2,7 +2,6 @@ package top.ninng.qs.article.controller;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
-import top.ninng.entity.UnifyResponse;
 import top.ninng.qs.article.config.IdConfig;
 import top.ninng.qs.article.entity.Article;
 import top.ninng.qs.article.entity.ArticleIdListPageResult;
@@ -10,8 +9,9 @@ import top.ninng.qs.article.entity.ArticleTimelineMonthResult;
 import top.ninng.qs.article.entity.PageInfo;
 import top.ninng.qs.article.service.IArticleService;
 import top.ninng.qs.article.utils.Ip;
-import top.ninng.utils.EmptyCheck;
-import top.ninng.utils.IdObfuscator;
+import top.ninng.qs.common.entity.UnifyResponse;
+import top.ninng.qs.common.utils.EmptyCheck;
+import top.ninng.qs.common.utils.IdObfuscator;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;

@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * @author OhmLaw
  * @description 针对表【article_tag(文章标签信息表)】的数据库操作Mapper
  * @createDate 2023-01-13 19:21:58
- * @Entity top.ninng.entity.ArticleTag
+ * @Entity top.ninng.qs.common.entity.ArticleTag
  */
 @Repository("articleTagMapper")
 public interface ArticleTagMapper {

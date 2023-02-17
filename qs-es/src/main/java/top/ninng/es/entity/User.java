@@ -1,4 +1,4 @@
-package top.ninng.es.domain;
+package top.ninng.es.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

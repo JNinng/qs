@@ -1,6 +1,6 @@
 package top.ninng.es.service;
 
-import top.ninng.es.domain.User;
+import top.ninng.es.entity.User;
 
 import java.util.Optional;
 
@@ -18,4 +18,6 @@ public interface UserService {
      * @return
      */
     Optional<User> findById(String id);
+
+    void save();
 }

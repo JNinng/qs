@@ -2,7 +2,7 @@ package top.ninng.qs.article.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import top.ninng.utils.IdObfuscator;
+import top.ninng.qs.common.utils.IdObfuscator;
 
 /**
  * @Author OhmLaw

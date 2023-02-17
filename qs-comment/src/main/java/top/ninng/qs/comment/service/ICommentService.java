@@ -1,8 +1,8 @@
 package top.ninng.qs.comment.service;
 
-import top.ninng.entity.UnifyResponse;
 import top.ninng.qs.comment.entity.Comment;
 import top.ninng.qs.comment.entity.CommentResultItem;
+import top.ninng.qs.common.entity.UnifyResponse;
 
 import java.util.ArrayList;
 
