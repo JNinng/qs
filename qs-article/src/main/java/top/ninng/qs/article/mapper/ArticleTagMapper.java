@@ -65,6 +65,14 @@ public interface ArticleTagMapper {
     int selectCountByTag(Long tagId);
 
     /**
+     * 根据文章 id 查询关联标签 id
+     *
+     * @param articleId
+     * @return
+     */
+    ArrayList<Long> selectTagIdByArticleIdLongs(long articleId);
+
+    /**
      * 根据 id 更新文章标签关系
      *
      * @param record 文章标签关系 id

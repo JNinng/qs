@@ -34,6 +34,12 @@
         where tag_id = #{id,jdbcType=INTEGER}
     </select>
 
+    <select id="selectTagIdByArticleIdLongs" resultType="java.lang.Long">
+        select tag_id
+        from article_tag
+        where article_id = #{articleId,jdbcType=INTEGER}
+    </select>
+
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete
         from article_tag
