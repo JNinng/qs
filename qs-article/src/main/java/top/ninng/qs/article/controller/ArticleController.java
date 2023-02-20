@@ -3,10 +3,7 @@ package top.ninng.qs.article.controller;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import top.ninng.qs.article.config.IdConfig;
-import top.ninng.qs.article.entity.Article;
-import top.ninng.qs.article.entity.ArticleIdListPageResult;
-import top.ninng.qs.article.entity.ArticleTimelineMonthResult;
-import top.ninng.qs.article.entity.PageInfo;
+import top.ninng.qs.article.entity.*;
 import top.ninng.qs.article.service.IArticleService;
 import top.ninng.qs.article.utils.Ip;
 import top.ninng.qs.common.entity.UnifyResponse;
@@ -130,6 +127,18 @@ public class ArticleController {
     @RequestMapping(value = "/pageInfo", method = RequestMethod.GET)
     public UnifyResponse<PageInfo> getPageInfo() {
         return iArticleService.getPageInfo();
+    }
+
+    /**
+     * 获取用户文章数据：文章总数、被收藏数、总访问数量
+     *
+     * @param id 用户 id
+     * @return 数据信息
+     */
+    @RequestMapping(value = "/getUserArticleData", method = RequestMethod.POST)
+    public UnifyResponse<ArticleData> getUserArticleData(
+            @RequestParam("id") long id) {
+        return iArticleService.getUserArticleData(id);
     }
 
     /**

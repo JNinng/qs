@@ -5,8 +5,12 @@ import org.springframework.stereotype.Service;
 import top.ninng.qs.common.entity.UnifyResponse;
 import top.ninng.qs.common.utils.EmptyCheck;
 import top.ninng.qs.common.utils.IdObfuscator;
+import top.ninng.qs.user.clients.ArticleClient;
+import top.ninng.qs.user.config.IdConfig;
+import top.ninng.qs.user.entity.ArticleData;
 import top.ninng.qs.user.entity.LoginResult;
 import top.ninng.qs.user.entity.User;
+import top.ninng.qs.user.entity.UserInfo;
 import top.ninng.qs.user.mapper.UserMapper;
 import top.ninng.qs.user.service.IUserService;
 
@@ -35,10 +39,12 @@ public class UserServiceImpl implements IUserService {
     //    }
 
     UserMapper userMapper;
+    ArticleClient articleClient;
     IdObfuscator idObfuscator;
 
-    public UserServiceImpl(UserMapper userMapper, IdObfuscator idObfuscator) {
+    public UserServiceImpl(UserMapper userMapper, ArticleClient articleClient, IdObfuscator idObfuscator) {
         this.userMapper = userMapper;
+        this.articleClient = articleClient;
         this.idObfuscator = idObfuscator;
     }
 
@@ -62,6 +68,39 @@ public class UserServiceImpl implements IUserService {
             }
         }
         return UnifyResponse.ok(id + " 未登录！");
+    }
+
+    /**
+     * 获取用户信息
+     *
+     * @param id 用户 id
+     * @return 用户信息
+     */
+    @Override
+    public UnifyResponse<UserInfo> getUserInfo(long id) {
+        UserInfo userInfo;
+        User user = userMapper.selectByPrimaryKey(id);
+        if (EmptyCheck.notEmpty(user)) {
+            userInfo = new UserInfo();
+            userInfo.setId(idObfuscator.encode(user.getId(), IdConfig.USER_ID));
+            userInfo.setName(user.getUserName());
+            userInfo.setNickname(user.getNickname());
+            userInfo.setEmail(user.getEmail());
+            userInfo.setInfo(user.getUserName());
+            userInfo.setCreateTime(user.getCreateTime());
+            userInfo.setHeadPortrait(user.getHeadPortrait());
+            userInfo.setSite("");
+            // TODO: 获取关注数量
+            userInfo.setFollowNumber(44);
+            // TODO: 获取粉丝数量
+            userInfo.setFansNumber(4);
+            ArticleData data = articleClient.getUserArticleData(id).getData();
+            userInfo.setArticleNumber(data.getArticleNumber());
+            userInfo.setPageViewNumber(data.getPageViewNumber());
+            userInfo.setGetLikes(data.getGetLikes());
+            return UnifyResponse.ok(userInfo);
+        }
+        return UnifyResponse.fail("id 错误！", null);
     }
 
     /**

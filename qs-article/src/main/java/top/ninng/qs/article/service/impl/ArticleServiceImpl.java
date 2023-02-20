@@ -153,6 +153,21 @@ public class ArticleServiceImpl implements IArticleService {
         return UnifyResponse.ok(new PageInfo(articleMapper.selectArticleTotal()));
     }
 
+    @Override
+    public UnifyResponse<ArticleData> getUserArticleData(long id) {
+        ArticleData articleData = new ArticleData();
+        ArrayList<Article> articles = articleMapper.selectArticleDataByUserId(id);
+        if (articles.size() > 0) {
+            articleData.setArticleNumber(articles.size());
+            long pageViewNumber = articles.stream().mapToInt(Article::getPageView).sum();
+            long getLikes = articles.stream().mapToInt(Article::getLikeNum).sum();
+            articleData.setPageViewNumber(Math.toIntExact(pageViewNumber));
+            articleData.setGetLikes(Math.toIntExact(getLikes));
+            return UnifyResponse.ok(articleData);
+        }
+        return null;
+    }
+
     /**
      * 根据指定 id 更新文章
      *
