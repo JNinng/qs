@@ -132,6 +132,15 @@ public class ArticleController {
         return iArticleService.getPageInfo();
     }
 
+    @RequestMapping(value = "/saveIndex", method = RequestMethod.POST)
+    public UnifyResponse<String> saveIndex(@RequestParam(value = "id") String id) {
+        long[] realId = idObfuscator.decode(id, IdConfig.ARTICLE_ID);
+        if (realId.length > 0) {
+            return iArticleService.saveIndex(realId[0]);
+        }
+        return UnifyResponse.fail("id 错误！", null);
+    }
+
     /**
      * 根据混淆 id 更新文章
      * role:admin

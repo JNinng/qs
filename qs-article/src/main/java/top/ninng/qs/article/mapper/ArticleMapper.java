@@ -58,6 +58,8 @@ public interface ArticleMapper {
      */
     ArrayList<Article> selectArticleByPage(int l, int r);
 
+    ArrayList<Article> selectArticleDocumentByPage(int l, int r);
+
     /**
      * 分页查询文章 id
      *
@@ -81,6 +83,8 @@ public interface ArticleMapper {
      * @return 文章信息
      */
     Article selectByPrimaryKey(Long id);
+
+    int selectCount();
 
     /**
      * 根据文章 id 查询标题

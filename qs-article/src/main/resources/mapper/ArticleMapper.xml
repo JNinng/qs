@@ -100,6 +100,18 @@
         limit #{l,jdbcType=INTEGER},#{r,jdbcType=INTEGER}
     </select>
 
+    <select id="selectCount" resultType="java.lang.Integer">
+        select count(*)
+        from article
+    </select>
+
+    <select id="selectArticleDocumentByPage" resultType="top.ninng.qs.article.entity.Article" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"></include>
+        from article
+        limit #{l,jdbcType=INTEGER},#{r,jdbcType=INTEGER}
+    </select>
+
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete
         from article

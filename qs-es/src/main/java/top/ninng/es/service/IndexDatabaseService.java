@@ -1,51 +1,37 @@
 package top.ninng.es.service;
 
-import top.ninng.es.constants.ConsumerConstants;
-import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.action.get.GetRequest;
-import org.elasticsearch.action.get.GetResponse;
-import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.client.indices.CreateIndexRequest;
-import org.elasticsearch.common.xcontent.XContentType;
-import org.springframework.stereotype.Service;
+import top.ninng.es.entity.ArticleDocument;
+import top.ninng.es.entity.User;
+import top.ninng.qs.common.entity.UnifyResponse;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Optional;
 
 /**
  * @Author OhmLaw
- * @Date 2022/9/25 13:31
+ * @Date 2022/9/25 16:52
  * @Version 1.0
  */
-@Slf4j
-@Service
-public class IndexDatabaseService {
+public interface IndexDatabaseService {
 
-    private static final String TAG = "IndexDatabaseService";
-    private RestHighLevelClient client;
+    /**
+     * 查询
+     *
+     * @param id
+     * @return
+     */
+    Optional<User> findById(String id);
 
-    public IndexDatabaseService(RestHighLevelClient client) {
-        this.client = client;
-    }
+    void save();
 
-    public void createIndexDatabase(String index) {
-        CreateIndexRequest request = new CreateIndexRequest(index);
-        request.source(ConsumerConstants.CONSUMER_MAPPING_TEMPLATE, XContentType.JSON);
-        try {
-            client.indices().create(request, RequestOptions.DEFAULT);
-        } catch (IOException e) {
-            log.warn(e.getMessage());
-        }
-    }
+    void saveArticle(String id, String userId, String title, String content, Date createTime, Date updateTime);
 
-    public void getDocumentById(String id) {
-        GetRequest request = new GetRequest("user", id);
-        try {
-            GetResponse response = client.get(request, RequestOptions.DEFAULT);
-            String json = response.getSourceAsString();
-            log.info("json: " + json);
-        } catch (IOException e) {
-            log.warn(e.getMessage());
-        }
-    }
+    /**
+     * 文章搜索
+     *
+     * @param key
+     * @return
+     */
+    UnifyResponse<ArrayList<ArticleDocument>> searchArticle(String key, int page, int pageSize);
 }

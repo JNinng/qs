@@ -1,11 +1,13 @@
 package top.ninng.qs.article.service.impl;
 
 import org.springframework.stereotype.Service;
+import top.ninng.qs.article.clients.EsClient;
 import top.ninng.qs.article.config.IdConfig;
 import top.ninng.qs.article.entity.*;
 import top.ninng.qs.article.mapper.ArticleMapper;
 import top.ninng.qs.article.service.IArticleService;
 import top.ninng.qs.common.entity.UnifyResponse;
+import top.ninng.qs.common.utils.EmptyCheck;
 import top.ninng.qs.common.utils.IdObfuscator;
 
 import java.sql.Timestamp;
@@ -25,10 +27,12 @@ import java.util.stream.Collectors;
 public class ArticleServiceImpl implements IArticleService {
 
     ArticleMapper articleMapper;
+    EsClient esClient;
     IdObfuscator idObfuscator;
 
-    public ArticleServiceImpl(ArticleMapper articleMapper, IdObfuscator idObfuscator) {
+    public ArticleServiceImpl(ArticleMapper articleMapper, EsClient esClient, IdObfuscator idObfuscator) {
         this.articleMapper = articleMapper;
+        this.esClient = esClient;
         this.idObfuscator = idObfuscator;
     }
 
@@ -151,6 +155,35 @@ public class ArticleServiceImpl implements IArticleService {
     @Override
     public UnifyResponse<PageInfo> getPageInfo() {
         return UnifyResponse.ok(new PageInfo(articleMapper.selectArticleTotal()));
+    }
+
+    @Override
+    public UnifyResponse<String> saveIndex(long id) {
+        //        Article article = articleMapper.selectByPrimaryKey(id);
+        int count = articleMapper.selectCount();
+        for (int i = 0; i < count / 5 + 1; i++) {
+            ArrayList<Article> articles = articleMapper.selectArticleDocumentByPage(i * 5, 5);
+            articles.forEach(article -> {
+                if (EmptyCheck.notEmpty(article)) {
+                    ArticleDocument articleDocument = new ArticleDocument();
+                    articleDocument.setId(idObfuscator.encode(article.getId(), IdConfig.ARTICLE_ID));
+                    articleDocument.setUserId(idObfuscator.encode(article.getUserId(), IdConfig.USER_ID));
+                    articleDocument.setTitle(article.getTitle());
+                    articleDocument.setContent(article.getContent());
+                    articleDocument.setCreateTime(article.getCreateTime());
+                    articleDocument.setUpdateTime(article.getUpdateTime());
+                    esClient.saveArticle(
+                            idObfuscator.encode(article.getId(), IdConfig.ARTICLE_ID),
+                            idObfuscator.encode(article.getUserId(), IdConfig.USER_ID),
+                            article.getTitle(),
+                            article.getContent(),
+                            article.getCreateTime(),
+                            article.getUpdateTime()
+                    );
+                }
+            });
+        }
+        return UnifyResponse.ok();
     }
 
     /**

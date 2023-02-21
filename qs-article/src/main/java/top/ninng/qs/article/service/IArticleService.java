@@ -74,6 +74,14 @@ public interface IArticleService {
     UnifyResponse<PageInfo> getPageInfo();
 
     /**
+     * 保存指定文章 es 文档
+     *
+     * @param id
+     * @return
+     */
+    UnifyResponse<String> saveIndex(long id);
+
+    /**
      * 根据 id 更新文章
      *
      * @param id      文章 id
