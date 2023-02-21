@@ -1,13 +1,11 @@
 package top.ninng.qs.article.service.impl;
 
 import org.springframework.stereotype.Service;
-import top.ninng.qs.article.clients.EsClient;
 import top.ninng.qs.article.config.IdConfig;
 import top.ninng.qs.article.entity.*;
 import top.ninng.qs.article.mapper.ArticleMapper;
 import top.ninng.qs.article.service.IArticleService;
 import top.ninng.qs.common.entity.UnifyResponse;
-import top.ninng.qs.common.utils.EmptyCheck;
 import top.ninng.qs.common.utils.IdObfuscator;
 
 import java.sql.Timestamp;
@@ -155,6 +153,21 @@ public class ArticleServiceImpl implements IArticleService {
     @Override
     public UnifyResponse<PageInfo> getPageInfo() {
         return UnifyResponse.ok(new PageInfo(articleMapper.selectArticleTotal()));
+    }
+
+    @Override
+    public UnifyResponse<ArticleData> getUserArticleData(long id) {
+        ArticleData articleData = new ArticleData();
+        ArrayList<Article> articles = articleMapper.selectArticleDataByUserId(id);
+        if (articles.size() > 0) {
+            articleData.setArticleNumber(articles.size());
+            long pageViewNumber = articles.stream().mapToInt(Article::getPageView).sum();
+            long getLikes = articles.stream().mapToInt(Article::getLikeNum).sum();
+            articleData.setPageViewNumber(Math.toIntExact(pageViewNumber));
+            articleData.setGetLikes(Math.toIntExact(getLikes));
+            return UnifyResponse.ok(articleData);
+        }
+        return null;
     }
 
     @Override

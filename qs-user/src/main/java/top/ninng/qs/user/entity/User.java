@@ -27,37 +27,35 @@ public class User implements Serializable {
     private String userName;
 
     /**
+     * 用户昵称
+     */
+    private String nickname;
+    /**
      * 用户密码
      */
     @JSONField(serialize = false)
     private String userPassword;
-
     /**
      * 邮箱
      */
     private String email;
-
     /**
      * 创建时间
      */
     private Date createTime;
-
     /**
      * 修改时间
      */
     @JSONField(serialize = false)
     private Date updateTime;
-
     /**
      * 删除状态
      */
     private Boolean deleteStatus;
-
     /**
      * 审核状态
      */
     private Integer status;
-
     /**
      * 用户头像
      */
@@ -133,6 +131,14 @@ public class User implements Serializable {
         this.id = id;
     }
 
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
     /**
      * 审核状态
      */
@@ -202,6 +208,7 @@ public class User implements Serializable {
         result = prime * result + ((getDeleteStatus() == null) ? 0 : getDeleteStatus().hashCode());
         result = prime * result + ((getStatus() == null) ? 0 : getStatus().hashCode());
         result = prime * result + ((getHeadPortrait() == null) ? 0 : getHeadPortrait().hashCode());
+        result = prime * result + ((getNickname() == null) ? 0 : getNickname().hashCode());
         return result;
     }
 
@@ -231,7 +238,9 @@ public class User implements Serializable {
                 this.getDeleteStatus().equals(other.getDeleteStatus()))
                 && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
                 && (this.getHeadPortrait() == null ? other.getHeadPortrait() == null :
-                this.getHeadPortrait().equals(other.getHeadPortrait()));
+                this.getHeadPortrait().equals(other.getHeadPortrait()))
+                && (this.getNickname() == null ? other.getNickname() == null :
+                this.getNickname().equals(other.getNickname()));
     }
 
     @Override
@@ -239,7 +248,8 @@ public class User implements Serializable {
         return "User{" +
                 "id=" + id +
                 ", userName='" + userName + '\'' +
-                ", userPassword='" + "userPassword" + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", userPassword='" + userPassword + '\'' +
                 ", email='" + email + '\'' +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +

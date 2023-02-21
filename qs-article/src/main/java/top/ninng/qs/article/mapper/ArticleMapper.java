@@ -61,6 +61,14 @@ public interface ArticleMapper {
     ArrayList<Article> selectArticleDocumentByPage(int l, int r);
 
     /**
+     * 根据用户 id 查询文章总数
+     *
+     * @param userId 用户 id
+     * @return 拥有文章总数
+     */
+    ArrayList<Article> selectArticleDataByUserId(long userId);
+
+    /**
      * 分页查询文章 id
      *
      * @param l 左边界

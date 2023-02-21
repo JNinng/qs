@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import top.ninng.qs.common.entity.UnifyResponse;
 import top.ninng.qs.common.utils.IdObfuscator;
+import top.ninng.qs.user.config.IdConfig;
 import top.ninng.qs.user.entity.LoginResult;
+import top.ninng.qs.user.entity.UserInfo;
 import top.ninng.qs.user.service.IUserService;
 
 /**
@@ -45,6 +47,22 @@ public class UserController {
             }
         }
         return UnifyResponse.fail("您还未登录！");
+    }
+
+    /**
+     * 获取用户信息
+     *
+     * @param id 用户 id
+     * @return 登录结果
+     */
+    @RequestMapping(value = "/info", method = RequestMethod.POST)
+    public UnifyResponse<UserInfo> getUserInfo(
+            @RequestParam(value = "id") String id) {
+        long[] realId = idObfuscator.decode(id, IdConfig.USER_ID);
+        if (realId.length > 0) {
+            return iUserService.getUserInfo(realId[0]);
+        }
+        return UnifyResponse.fail("id 错误", null);
     }
 
     /**

@@ -1,9 +1,6 @@
 package top.ninng.qs.article.service;
 
-import top.ninng.qs.article.entity.Article;
-import top.ninng.qs.article.entity.ArticleIdListPageResult;
-import top.ninng.qs.article.entity.ArticleTimelineMonthResult;
-import top.ninng.qs.article.entity.PageInfo;
+import top.ninng.qs.article.entity.*;
 import top.ninng.qs.common.entity.UnifyResponse;
 
 import java.util.ArrayList;
@@ -80,6 +77,14 @@ public interface IArticleService {
      * @return
      */
     UnifyResponse<String> saveIndex(long id);
+
+    /**
+     * 根据用户 id 查询文章数据
+     *
+     * @param id 用户 id
+     * @return
+     */
+    UnifyResponse<ArticleData> getUserArticleData(long id);
 
     /**
      * 根据 id 更新文章

@@ -7,6 +7,7 @@
     <resultMap id="BaseResultMap" type="top.ninng.qs.user.entity.User">
         <id property="id" column="id" jdbcType="INTEGER"/>
         <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+        <result property="nickname" column="user_nickname" jdbcType="VARCHAR"/>
         <result property="userPassword" column="user_password" jdbcType="VARCHAR"/>
         <result property="email" column="email" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -17,7 +18,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,user_name,user_password,
+        id,user_name,user_nickname,user_password,
         email,create_time,update_time,
         delete_status,status,head_portrait
     </sql>
@@ -59,6 +60,7 @@
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">id,</if>
             <if test="userName != null">user_name,</if>
+            <if test="nickname != null">user_nickname,</if>
             <if test="userPassword != null">user_password,</if>
             <if test="email != null">email,</if>
             <if test="createTime != null">create_time,</if>
@@ -70,6 +72,7 @@
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id,jdbcType=INTEGER},</if>
             <if test="userName != null">#{userName,jdbcType=VARCHAR},</if>
+            <if test="nickname != null">#{nickname,jdbcType=VARCHAR},</if>
             <if test="userPassword != null">#{userPassword,jdbcType=VARCHAR},</if>
             <if test="email != null">#{email,jdbcType=VARCHAR},</if>
             <if test="createTime != null">#{createTime,jdbcType=TIMESTAMP},</if>
@@ -85,6 +88,9 @@
         <set>
             <if test="userName != null">
                 user_name = #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="nickname != null">
+                user_nickname = #{nickname,jdbcType=VARCHAR},
             </if>
             <if test="userPassword != null">
                 user_password = #{userPassword,jdbcType=VARCHAR},
@@ -114,6 +120,7 @@
     <update id="updateByPrimaryKey" parameterType="top.ninng.qs.user.entity.User">
         update user
         set user_name     = #{userName,jdbcType=VARCHAR},
+            user_nickname = #{nickname,jdbcType=VARCHAR},
             user_password = #{userPassword,jdbcType=VARCHAR},
             email         = #{email,jdbcType=VARCHAR},
             create_time   = #{createTime,jdbcType=TIMESTAMP},

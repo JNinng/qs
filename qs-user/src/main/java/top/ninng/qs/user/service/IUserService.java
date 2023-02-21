@@ -2,6 +2,7 @@ package top.ninng.qs.user.service;
 
 import top.ninng.qs.common.entity.UnifyResponse;
 import top.ninng.qs.user.entity.LoginResult;
+import top.ninng.qs.user.entity.UserInfo;
 
 /**
  * 用户服务接口
@@ -19,6 +20,14 @@ public interface IUserService {
      * @return 登录状态
      */
     UnifyResponse<String> checkLogin(long id);
+
+    /**
+     * 获取用户信息
+     *
+     * @param id 用户 id
+     * @return 用户信息
+     */
+    UnifyResponse<UserInfo> getUserInfo(long id);
 
     /**
      * 用户登录
