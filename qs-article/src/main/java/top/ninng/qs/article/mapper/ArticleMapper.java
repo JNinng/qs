@@ -58,8 +58,6 @@ public interface ArticleMapper {
      */
     ArrayList<Article> selectArticleByPage(int l, int r);
 
-    ArrayList<Article> selectArticleDocumentByPage(int l, int r);
-
     /**
      * 根据用户 id 查询文章总数
      *
@@ -67,6 +65,8 @@ public interface ArticleMapper {
      * @return 拥有文章总数
      */
     ArrayList<Article> selectArticleDataByUserId(long userId);
+
+    ArrayList<Article> selectArticleDocumentByPage(int l, int r);
 
     /**
      * 分页查询文章 id
@@ -76,6 +76,16 @@ public interface ArticleMapper {
      * @return 分页查询 id 结果列表
      */
     ArrayList<Long> selectArticleIdListByPage(int l, int r);
+
+    /**
+     * 分页查询用户拥有文章 id
+     *
+     * @param userId 用户 id
+     * @param l      左边界
+     * @param r      右边界
+     * @return 分页查询 id 结果列表
+     */
+    ArrayList<Long> selectArticleIdListByPageAndUserId(long userId, int l, int r);
 
     /**
      * 查询分页信息

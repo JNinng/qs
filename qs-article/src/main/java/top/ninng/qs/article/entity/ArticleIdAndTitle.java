@@ -21,10 +21,19 @@ public class ArticleIdAndTitle implements Serializable {
     @JSONField(format = "yyyy年MM月dd日")
     Date date;
     String title;
+    String content;
 
     public ArticleIdAndTitle(String id, String title) {
         this.id = id;
         this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public Date getDate() {

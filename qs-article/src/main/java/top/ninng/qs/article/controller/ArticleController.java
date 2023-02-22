@@ -85,8 +85,15 @@ public class ArticleController {
      */
     @RequestMapping(value = "/getIdListPage", method = RequestMethod.POST)
     public UnifyResponse<ArticleIdListPageResult> getArticleIdListByPage(
+            @RequestParam(value = "id", required = false) String id,
             @RequestParam(value = "page") int page,
             @RequestParam(value = "pageSize") int pageSize) {
+        if (EmptyCheck.notEmpty(id)) {
+            long[] realId = idObfuscator.decode(id, IdConfig.USER_ID);
+            if (realId.length > 0) {
+                return iArticleService.getArticleIdListByPageAndId(realId[0], page, pageSize);
+            }
+        }
         return iArticleService.getArticleIdListByPage(page, pageSize);
     }
 

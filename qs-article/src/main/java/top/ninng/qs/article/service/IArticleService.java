@@ -35,6 +35,16 @@ public interface IArticleService {
     UnifyResponse<ArticleIdListPageResult> getArticleIdListByPage(int page, int pageSize);
 
     /**
+     * 根据用户 id 获取分页文章信息
+     *
+     * @param userId   用户 id
+     * @param page     页数
+     * @param pageSize 页大小
+     * @return 分页信息
+     */
+    UnifyResponse<ArticleIdListPageResult> getArticleIdListByPageAndId(long userId, int page, int pageSize);
+
+    /**
      * 根据 id 获取文章简略信息（无正文）
      *
      * @param id 文章 id

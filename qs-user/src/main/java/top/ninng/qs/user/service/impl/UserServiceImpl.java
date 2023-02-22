@@ -94,10 +94,19 @@ public class UserServiceImpl implements IUserService {
             userInfo.setFollowNumber(44);
             // TODO: 获取粉丝数量
             userInfo.setFansNumber(4);
-            ArticleData data = articleClient.getUserArticleData(id).getData();
-            userInfo.setArticleNumber(data.getArticleNumber());
-            userInfo.setPageViewNumber(data.getPageViewNumber());
-            userInfo.setGetLikes(data.getGetLikes());
+            UnifyResponse<ArticleData> response = articleClient.getUserArticleData(id);
+            if (EmptyCheck.notEmpty(response)) {
+                ArticleData data = response.getData();
+                if (EmptyCheck.notEmpty(data)) {
+                    userInfo.setArticleNumber(data.getArticleNumber());
+                    userInfo.setPageViewNumber(data.getPageViewNumber());
+                    userInfo.setGetLikes(data.getGetLikes());
+                } else {
+                    userInfo.setArticleNumber(0);
+                    userInfo.setPageViewNumber(0);
+                    userInfo.setGetLikes(0);
+                }
+            }
             return UnifyResponse.ok(userInfo);
         }
         return UnifyResponse.fail("id 错误！", null);
