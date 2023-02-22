@@ -23,6 +23,7 @@ public class AuthorizationFilter implements GlobalFilter {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
         ServerHttpRequest.Builder mutate = request.mutate();
+        System.out.println(String.valueOf(exchange.getRequest().getHeaders().get("token")));
         mutate.header("gateway_token", "6ff71f1a-68ec-4f76-b0c3-e39882e574a0");
         mutate.header("user_ip", Ip.getIpAddr(exchange.getRequest()));
         if (StpUtil.isLogin()) {
