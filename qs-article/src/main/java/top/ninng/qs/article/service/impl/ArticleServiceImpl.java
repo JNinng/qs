@@ -1,5 +1,6 @@
 package top.ninng.qs.article.service.impl;
 
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.ninng.qs.article.clients.EsClient;
 import top.ninng.qs.article.config.IdConfig;
@@ -11,9 +12,12 @@ import top.ninng.qs.common.utils.EmptyCheck;
 import top.ninng.qs.common.utils.IdObfuscator;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -28,12 +32,40 @@ public class ArticleServiceImpl implements IArticleService {
 
     ArticleMapper articleMapper;
     EsClient esClient;
+    RedisTemplate<Object, Object> redisTemplate;
     IdObfuscator idObfuscator;
 
-    public ArticleServiceImpl(ArticleMapper articleMapper, EsClient esClient, IdObfuscator idObfuscator) {
+    public ArticleServiceImpl(ArticleMapper articleMapper, EsClient esClient,
+                              RedisTemplate<Object, Object> redisTemplate, IdObfuscator idObfuscator) {
         this.articleMapper = articleMapper;
         this.esClient = esClient;
+        this.redisTemplate = redisTemplate;
         this.idObfuscator = idObfuscator;
+    }
+
+    @Override
+    public UnifyResponse<String> addScore(long id, String mode, String ip, int time) {
+        switch (mode) {
+            case "article":
+                String visitor = "qs:score:cooling:article:" + id + ":" + ip;
+                Boolean cooling = (Boolean) redisTemplate.opsForValue().get(visitor);
+                if (EmptyCheck.notEmpty(cooling)) {
+                    return UnifyResponse.fail("无效！", null);
+                }
+                redisTemplate.opsForValue().set(visitor, true, 60, TimeUnit.SECONDS);
+                String date = new SimpleDateFormat("yyyyMMdd").format(new Date(System.currentTimeMillis()));
+                double log = Math.log(time / 60.0 + 1);
+                System.out.println("score: " + log);
+                String scorePool = "qs:score:article:day:" + date;
+                redisTemplate.opsForZSet().incrementScore(scorePool, id, log);
+                break;
+            case "user":
+                // TODO: 用户模式
+                break;
+            default:
+                break;
+        }
+        return null;
     }
 
     /**
@@ -153,8 +185,43 @@ public class ArticleServiceImpl implements IArticleService {
     }
 
     @Override
+    public UnifyResponse<ArticleIdListPageResult> getHot() {
+        String date = new SimpleDateFormat("yyyyMMdd").format(new Date(System.currentTimeMillis()));
+        String scorePool = "qs:score:article:day:" + date;
+        ArrayList<ArticleIdAndTitle> list = new ArrayList<>();
+        Set<Object> range = redisTemplate.opsForZSet().range(scorePool, 0, 10);
+        if (EmptyCheck.notEmpty(range) && range.size() > 0) {
+            range.forEach(o -> {
+                ArticleIdAndTitle articleIdAndTitle =
+                        articleMapper.selectTitleAndDateByPrimaryKey(Long.valueOf((Integer) o));
+                articleIdAndTitle.setId(idObfuscator.encode((Integer) o, IdConfig.ARTICLE_ID));
+                if (EmptyCheck.notEmpty(articleIdAndTitle)) {
+                    list.add(articleIdAndTitle);
+                }
+            });
+            return UnifyResponse.ok(new ArticleIdListPageResult(list, 1, 10));
+        }
+        return UnifyResponse.fail("暂无榜单信息 ！", null);
+    }
+
+    @Override
     public UnifyResponse<PageInfo> getPageInfo() {
         return UnifyResponse.ok(new PageInfo(articleMapper.selectArticleTotal()));
+    }
+
+    @Override
+    public UnifyResponse<ArticleData> getUserArticleData(long id) {
+        ArticleData articleData = new ArticleData();
+        ArrayList<Article> articles = articleMapper.selectArticleDataByUserId(id);
+        if (articles.size() > 0) {
+            articleData.setArticleNumber(articles.size());
+            long pageViewNumber = articles.stream().mapToInt(Article::getPageView).sum();
+            long getLikes = articles.stream().mapToInt(Article::getLikeNum).sum();
+            articleData.setPageViewNumber(Math.toIntExact(pageViewNumber));
+            articleData.setGetLikes(Math.toIntExact(getLikes));
+            return UnifyResponse.ok(articleData);
+        }
+        return null;
     }
 
     @Override
@@ -184,21 +251,6 @@ public class ArticleServiceImpl implements IArticleService {
             });
         }
         return UnifyResponse.ok();
-    }
-
-    @Override
-    public UnifyResponse<ArticleData> getUserArticleData(long id) {
-        ArticleData articleData = new ArticleData();
-        ArrayList<Article> articles = articleMapper.selectArticleDataByUserId(id);
-        if (articles.size() > 0) {
-            articleData.setArticleNumber(articles.size());
-            long pageViewNumber = articles.stream().mapToInt(Article::getPageView).sum();
-            long getLikes = articles.stream().mapToInt(Article::getLikeNum).sum();
-            articleData.setPageViewNumber(Math.toIntExact(pageViewNumber));
-            articleData.setGetLikes(Math.toIntExact(getLikes));
-            return UnifyResponse.ok(articleData);
-        }
-        return null;
     }
 
     /**

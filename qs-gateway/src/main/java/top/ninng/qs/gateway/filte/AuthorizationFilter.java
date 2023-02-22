@@ -8,6 +8,7 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+import top.ninng.qs.gateway.utils.Ip;
 
 /**
  * @Author OhmLaw
@@ -23,6 +24,7 @@ public class AuthorizationFilter implements GlobalFilter {
         ServerHttpRequest request = exchange.getRequest();
         ServerHttpRequest.Builder mutate = request.mutate();
         mutate.header("gateway_token", "6ff71f1a-68ec-4f76-b0c3-e39882e574a0");
+        mutate.header("user_ip", Ip.getIpAddr(exchange.getRequest()));
         if (StpUtil.isLogin()) {
             mutate.header("user_id", StpUtil.getLoginId().toString());
         }

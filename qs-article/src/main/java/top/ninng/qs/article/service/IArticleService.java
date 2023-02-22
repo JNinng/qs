@@ -15,6 +15,8 @@ import java.util.Date;
  */
 public interface IArticleService {
 
+    UnifyResponse<String> addScore(long id, String mode, String ip, int time);
+
     /**
      * 根据 id 获取文章
      *
@@ -64,19 +66,18 @@ public interface IArticleService {
     UnifyResponse<ArticleTimelineMonthResult> getArticleTimelineMonthResult(Date date);
 
     /**
+     * 获取热榜
+     *
+     * @return
+     */
+    UnifyResponse<ArticleIdListPageResult> getHot();
+
+    /**
      * 查询分页信息
      *
      * @return 分页信息
      */
     UnifyResponse<PageInfo> getPageInfo();
-
-    /**
-     * 保存指定文章 es 文档
-     *
-     * @param id
-     * @return
-     */
-    UnifyResponse<String> saveIndex(long id);
 
     /**
      * 根据用户 id 查询文章数据
@@ -85,6 +86,14 @@ public interface IArticleService {
      * @return
      */
     UnifyResponse<ArticleData> getUserArticleData(long id);
+
+    /**
+     * 保存指定文章 es 文档
+     *
+     * @param id
+     * @return
+     */
+    UnifyResponse<String> saveIndex(long id);
 
     /**
      * 根据 id 更新文章

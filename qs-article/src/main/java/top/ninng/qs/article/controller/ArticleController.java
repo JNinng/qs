@@ -34,6 +34,30 @@ public class ArticleController {
         System.out.println(idObfuscator.encode(1, IdConfig.ARTICLE_ID));
     }
 
+    @RequestMapping(value = "/addScore", method = RequestMethod.POST)
+    public UnifyResponse<String> addScore(
+            @RequestParam(value = "id") String id,
+            @RequestParam(value = "mode") String mode,
+            @RequestParam(value = "time") int time,
+            HttpServletRequest request) {
+        String visitor = request.getHeader("user_ip");
+        long[] realId = new long[]{};
+        switch (mode) {
+            case "article":
+                realId = idObfuscator.decode(id, IdConfig.ARTICLE_ID);
+                break;
+            case "user":
+                realId = idObfuscator.decode(id, IdConfig.USER_ID);
+                break;
+            default:
+                break;
+        }
+        if (realId.length > 0) {
+            return iArticleService.addScore(realId[0], mode, visitor, time);
+        }
+        return UnifyResponse.fail("id 错误！", null);
+    }
+
     /**
      * 根据混淆 id 获取文章
      *
@@ -118,6 +142,11 @@ public class ArticleController {
         return iArticleService.getArticleTimelineMonthResult(date);
     }
 
+    @RequestMapping(value = "/hot", method = RequestMethod.POST)
+    public UnifyResponse<ArticleIdListPageResult> getHot() {
+        return iArticleService.getHot();
+    }
+
     /**
      * 获取文章管理的分页信息
      * role:admin
@@ -127,6 +156,18 @@ public class ArticleController {
     @RequestMapping(value = "/pageInfo", method = RequestMethod.GET)
     public UnifyResponse<PageInfo> getPageInfo() {
         return iArticleService.getPageInfo();
+    }
+
+    /**
+     * 获取用户文章数据：文章总数、被收藏数、总访问数量
+     *
+     * @param id 用户 id
+     * @return 数据信息
+     */
+    @RequestMapping(value = "/getUserArticleData", method = RequestMethod.POST)
+    public UnifyResponse<ArticleData> getUserArticleData(
+            @RequestParam("id") long id) {
+        return iArticleService.getUserArticleData(id);
     }
 
     @RequestMapping(value = "/push", method = RequestMethod.POST)
@@ -157,18 +198,6 @@ public class ArticleController {
             return iArticleService.saveIndex(realId[0]);
         }
         return UnifyResponse.fail("id 错误！", null);
-    }
-
-    /**
-     * 获取用户文章数据：文章总数、被收藏数、总访问数量
-     *
-     * @param id 用户 id
-     * @return 数据信息
-     */
-    @RequestMapping(value = "/getUserArticleData", method = RequestMethod.POST)
-    public UnifyResponse<ArticleData> getUserArticleData(
-            @RequestParam("id") long id) {
-        return iArticleService.getUserArticleData(id);
     }
 
     /**
