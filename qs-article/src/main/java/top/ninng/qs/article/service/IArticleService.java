@@ -35,6 +35,16 @@ public interface IArticleService {
     UnifyResponse<ArticleIdListPageResult> getArticleIdListByPage(int page, int pageSize);
 
     /**
+     * 根据用户 id 获取分页文章信息
+     *
+     * @param userId   用户 id
+     * @param page     页数
+     * @param pageSize 页大小
+     * @return 分页信息
+     */
+    UnifyResponse<ArticleIdListPageResult> getArticleIdListByPageAndId(long userId, int page, int pageSize);
+
+    /**
      * 根据 id 获取文章简略信息（无正文）
      *
      * @param id 文章 id
@@ -48,6 +58,16 @@ public interface IArticleService {
      * @return 文章信息列表
      */
     UnifyResponse<ArrayList<Article>> getArticleListByPage(int page, int pageSize);
+
+    /**
+     * 获取指定 id 的文章分页信息
+     *
+     * @param page     页数
+     * @param pageSize 叶大小
+     * @param userId   用户 id
+     * @return
+     */
+    UnifyResponse<ArrayList<Article>> getArticleListByPageAndId(int page, int pageSize, long userId);
 
     /**
      * 根据 id 获取文章预览版
@@ -78,6 +98,14 @@ public interface IArticleService {
      * @return 分页信息
      */
     UnifyResponse<PageInfo> getPageInfo();
+
+    /**
+     * 获取指定用户 id 的文章分页信息
+     *
+     * @param userId
+     * @return
+     */
+    UnifyResponse<PageInfo> getPageInfoById(long userId);
 
     /**
      * 根据用户 id 查询文章数据

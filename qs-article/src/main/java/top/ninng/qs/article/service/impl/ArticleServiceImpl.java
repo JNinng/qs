@@ -110,6 +110,27 @@ public class ArticleServiceImpl implements IArticleService {
         return UnifyResponse.ok(new ArticleIdListPageResult(articleIdList, page, pageSize));
     }
 
+    @Override
+    public UnifyResponse<ArticleIdListPageResult> getArticleIdListByPageAndId(long userId, int page, int pageSize) {
+        // 处理网页分页逻辑和数据库分页查询逻辑
+        page = (page <= 0) ? 1 : page;
+        ArrayList<ArticleIdAndTitle> articleIdList =
+                articleMapper.selectArticleIdListByPageAndUserId(userId, (page - 1) * pageSize, pageSize)
+                        //查询结果处理
+                        .stream()
+                        // id 混淆
+                        .map(aLong -> {
+                            ArticleIdAndTitle articleIdAndTitle = articleMapper.selectTitleAndDateByPrimaryKey(aLong);
+                            articleIdAndTitle.setId(idObfuscator.encode(Math.toIntExact(aLong), IdConfig.ARTICLE_ID));
+                            articleIdAndTitle.setContent(articleIdAndTitle.getContent().substring(0,
+                                    Math.min(articleIdAndTitle.getContent().length(), 400)));
+                            return articleIdAndTitle;
+                        })
+                        // 转化为列表
+                        .collect(Collectors.toCollection(ArrayList::new));
+        return UnifyResponse.ok(new ArticleIdListPageResult(articleIdList, page, pageSize));
+    }
+
     /**
      * 获取指定 id 的文章简略信息
      *
@@ -133,6 +154,25 @@ public class ArticleServiceImpl implements IArticleService {
         // 处理网页分页逻辑和数据库分页查询逻辑
         page = (page <= 0) ? 1 : page;
         ArrayList<Article> articleArrayList = articleMapper.selectArticleByPage((page - 1) * pageSize, pageSize)
+                //查询结果处理
+                .stream()
+                // id 混淆
+                .peek(article -> {
+                    article.setObfuscatorId(idObfuscator.encode(article.getId(), IdConfig.ARTICLE_ID));
+                    article.setObfuscatorUserId(idObfuscator.encode(article.getUserId(), IdConfig.USER_ID));
+                })
+                // 转化为列表
+                .collect(Collectors.toCollection(ArrayList::new));
+        ;
+        return UnifyResponse.ok(articleArrayList);
+    }
+
+    @Override
+    public UnifyResponse<ArrayList<Article>> getArticleListByPageAndId(int page, int pageSize, long userId) {
+        // 处理网页分页逻辑和数据库分页查询逻辑
+        page = (page <= 0) ? 1 : page;
+        ArrayList<Article> articleArrayList = articleMapper.selectArticleByPageAndId((page - 1) * pageSize, pageSize,
+                userId)
                 //查询结果处理
                 .stream()
                 // id 混淆
@@ -207,6 +247,11 @@ public class ArticleServiceImpl implements IArticleService {
     @Override
     public UnifyResponse<PageInfo> getPageInfo() {
         return UnifyResponse.ok(new PageInfo(articleMapper.selectArticleTotal()));
+    }
+
+    @Override
+    public UnifyResponse<PageInfo> getPageInfoById(long userId) {
+        return UnifyResponse.ok(new PageInfo(articleMapper.selectArticleTotalById(userId)));
     }
 
     @Override

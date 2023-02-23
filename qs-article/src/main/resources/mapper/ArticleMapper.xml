@@ -30,6 +30,7 @@
     <resultMap id="ArticleIdAndTitle" type="top.ninng.qs.article.entity.ArticleIdAndTitle">
         <result property="title" column="title" jdbcType="VARCHAR"/>
         <result property="date" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -71,7 +72,7 @@
 
     <select id="selectTitleAndDateByPrimaryKey" resultType="top.ninng.qs.article.entity.ArticleIdAndTitle"
             resultMap="ArticleIdAndTitle">
-        select title, create_time
+        select title, create_time, content
         from article
         where id = #{id,jdbcType=INTEGER}
     </select>
@@ -116,6 +117,41 @@
         <include refid="Base_Column_List"></include>
         from article
         limit #{l,jdbcType=INTEGER},#{r,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectArticleIdListByPageAndUserId" resultType="java.lang.Long">
+        select id
+        from article
+        where user_id = #{userId,jdbcType=INTEGER}
+        order by update_time desc
+        limit #{l,jdbcType=INTEGER},#{r,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectArticleByPageAndId" resultType="top.ninng.qs.article.entity.Article" resultMap="BaseResultMap">
+        select id,
+               user_id,
+               create_time,
+               update_time,
+               delete_status,
+               title,
+               page_view,
+               like_num,
+               status,
+               stick,
+               site,
+               ip,
+               mode
+        from article
+        where user_id = #{userId,jdbcType=INTEGER}
+        order by update_time desc
+        limit #{l,jdbcType=INTEGER},#{r,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectArticleTotalById" resultType="java.lang.Integer">
+        select count(id)
+        from article
+        where user_id = #{userId,jdbcType=INTEGER
+        }
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">

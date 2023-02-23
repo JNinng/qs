@@ -83,8 +83,8 @@ public class IndexDatabaseServiceImpl implements IndexDatabaseService {
                     .postTags("`");
             queryBuilder.withHighlightFields(titleField, contentField);
 
-            boolQueryBuilder.must(QueryBuilders.matchQuery("title", key));
-            boolQueryBuilder.must(QueryBuilders.matchQuery("content", key));
+            boolQueryBuilder.should(QueryBuilders.matchQuery("title", key));
+            boolQueryBuilder.should(QueryBuilders.matchQuery("content", key));
 
             queryBuilder.withQuery(boolQueryBuilder);
             long count = elasticsearchRestTemplate.count(queryBuilder.build(), ArticleDocument.class);

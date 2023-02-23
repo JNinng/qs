@@ -85,8 +85,15 @@ public class ArticleController {
      */
     @RequestMapping(value = "/getIdListPage", method = RequestMethod.POST)
     public UnifyResponse<ArticleIdListPageResult> getArticleIdListByPage(
+            @RequestParam(value = "id", required = false) String id,
             @RequestParam(value = "page") int page,
             @RequestParam(value = "pageSize") int pageSize) {
+        if (EmptyCheck.notEmpty(id)) {
+            long[] realId = idObfuscator.decode(id, IdConfig.USER_ID);
+            if (realId.length > 0) {
+                return iArticleService.getArticleIdListByPageAndId(realId[0], page, pageSize);
+            }
+        }
         return iArticleService.getArticleIdListByPage(page, pageSize);
     }
 
@@ -115,8 +122,24 @@ public class ArticleController {
     @RequestMapping(value = "/getPageList", method = RequestMethod.POST)
     public UnifyResponse<ArrayList<Article>> getArticleListByPage(
             @RequestParam(value = "page") int page,
-            @RequestParam(value = "pageSize") int pageSize) {
-        return iArticleService.getArticleListByPage(page, pageSize);
+            @RequestParam(value = "pageSize") int pageSize,
+            @RequestParam(value = "userId", required = false) String userId,
+            HttpServletRequest request) {
+        long[] loginId = new long[]{0L};
+        if (EmptyCheck.isEmpty(userId)) {
+            userId = request.getHeader("user_id");
+            if (EmptyCheck.notEmpty(userId)) {
+                loginId[0] = Long.parseLong(userId);
+                if (loginId[0] == 1) {
+                    return iArticleService.getArticleListByPage(page, pageSize);
+                }
+            } else {
+                return UnifyResponse.fail("id 错误！", null);
+            }
+        } else {
+            loginId = idObfuscator.decode(userId, IdConfig.USER_ID);
+        }
+        return iArticleService.getArticleListByPageAndId(page, pageSize, loginId[0]);
     }
 
     /**
@@ -154,8 +177,25 @@ public class ArticleController {
      * @return 文章管理部分分页信息
      */
     @RequestMapping(value = "/pageInfo", method = RequestMethod.GET)
-    public UnifyResponse<PageInfo> getPageInfo() {
-        return iArticleService.getPageInfo();
+    public UnifyResponse<PageInfo> getPageInfo(
+            @RequestParam(value = "userId", required = false) String userId,
+            HttpServletRequest request) {
+        long[] longId = new long[]{0L};
+        if (EmptyCheck.notEmpty(userId)) {
+            longId = idObfuscator.decode(userId, IdConfig.USER_ID);
+            if (longId.length > 0) {
+                if (longId[0] == 1) {
+                    return iArticleService.getPageInfo();
+                } else {
+                    return iArticleService.getPageInfoById(longId[0]);
+                }
+            }
+        }
+        String userIdStr = request.getHeader("user_id");
+        if (EmptyCheck.notEmpty(userIdStr)) {
+            longId[0] = Long.parseLong(userIdStr);
+        }
+        return iArticleService.getPageInfoById(longId[0]);
     }
 
     /**
