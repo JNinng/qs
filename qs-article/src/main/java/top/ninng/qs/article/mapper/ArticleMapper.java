@@ -58,6 +58,8 @@ public interface ArticleMapper {
      */
     ArrayList<Article> selectArticleByPage(int l, int r);
 
+    ArrayList<Article> selectArticleByPageAndId(int l, int r, long userId);
+
     /**
      * 根据用户 id 查询文章总数
      *
@@ -93,6 +95,14 @@ public interface ArticleMapper {
      * @return 文章分页信息
      */
     int selectArticleTotal();
+
+    /**
+     * 查询指定用户 id 文章分页信息
+     *
+     * @param userId
+     * @return
+     */
+    int selectArticleTotalById(long userId);
 
     /**
      * 根据 id 查询文章信息

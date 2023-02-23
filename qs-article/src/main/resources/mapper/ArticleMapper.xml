@@ -127,6 +127,33 @@
         limit #{l,jdbcType=INTEGER},#{r,jdbcType=INTEGER}
     </select>
 
+    <select id="selectArticleByPageAndId" resultType="top.ninng.qs.article.entity.Article" resultMap="BaseResultMap">
+        select id,
+               user_id,
+               create_time,
+               update_time,
+               delete_status,
+               title,
+               page_view,
+               like_num,
+               status,
+               stick,
+               site,
+               ip,
+               mode
+        from article
+        where user_id = #{userId,jdbcType=INTEGER}
+        order by update_time desc
+        limit #{l,jdbcType=INTEGER},#{r,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectArticleTotalById" resultType="java.lang.Integer">
+        select count(id)
+        from article
+        where user_id = #{userId,jdbcType=INTEGER
+        }
+    </select>
+
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete
         from article
