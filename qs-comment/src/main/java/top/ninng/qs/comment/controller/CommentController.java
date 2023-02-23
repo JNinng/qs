@@ -88,6 +88,18 @@ public class CommentController {
         return UnifyResponse.fail();
     }
 
+    @RequestMapping(value = "/deleteById", method = RequestMethod.POST)
+    public UnifyResponse<String> deleteById(@RequestParam("id") String id, HttpServletRequest request) {
+        String loginId = request.getHeader("user_id");
+        if (EmptyCheck.notEmpty(loginId)) {
+            long[] realId = idObfuscator.decode(id, IdConfig.COMMENT_ID);
+            if (realId.length > 0) {
+                return iCommentService.deleteById(realId[0], Long.parseLong(loginId));
+            }
+        }
+        return null;
+    }
+
     /**
      * 根据混淆评论 id 获取子评论
      *
@@ -132,6 +144,25 @@ public class CommentController {
         long[] realId = idObfuscator.decode(id, IdConfig.COMMENT_ID);
         if (realId.length > 0) {
             return iCommentService.getCommentById(realId[0]);
+        }
+        return UnifyResponse.fail("id 错误！", null);
+    }
+
+
+    /**
+     * 根据用户 id 获取评论
+     *
+     * @return 指定评论信息列表
+     */
+    @RequestMapping(value = "/byUserId", method = RequestMethod.POST)
+    public UnifyResponse<ArrayList<CommentResultItem>> getCommentByUserId(
+            @RequestParam(value = "page") int page,
+            @RequestParam(value = "pageSize") int pageSize,
+            HttpServletRequest request) {
+        String userIdStr = request.getHeader("user_id");
+        if (EmptyCheck.notEmpty(userIdStr)) {
+            long loginId = Long.parseLong(userIdStr);
+            return iCommentService.getCommentByUserId(loginId, page, pageSize);
         }
         return UnifyResponse.fail("id 错误！", null);
     }

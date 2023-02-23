@@ -16,6 +16,7 @@ public class CommentResultItem implements Serializable {
 
     Comment comment;
     ArrayList<Comment> childCommentList;
+    int parentCount;
 
     public CommentResultItem(Comment comment, ArrayList<Comment> childCommentList) {
         this.comment = comment;
@@ -36,6 +37,14 @@ public class CommentResultItem implements Serializable {
 
     public void setComment(Comment comment) {
         this.comment = comment;
+    }
+
+    public int getParentCount() {
+        return parentCount;
+    }
+
+    public void setParentCount(int parentCount) {
+        this.parentCount = parentCount;
     }
 
     @Override

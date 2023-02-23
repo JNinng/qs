@@ -63,6 +63,23 @@ public interface CommentMapper {
     ArrayList<Comment> selectCommentByParentId(Long parentId);
 
     /**
+     * 根据用户 id 查询评论
+     *
+     * @param userId
+     * @return
+     */
+    ArrayList<Comment> selectCommentByUserId(long userId, int l, int r);
+
+
+    /**
+     * 查询用户评论数量
+     *
+     * @param userId 用户 id
+     * @return
+     */
+    int selectCommentByUserIdCount(long userId);
+
+    /**
      * 根据 id 更新一条评论
      *
      * @param comment 评论

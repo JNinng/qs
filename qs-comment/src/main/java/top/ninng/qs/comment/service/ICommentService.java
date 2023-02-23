@@ -29,6 +29,8 @@ public interface ICommentService {
     UnifyResponse<String> comment(String name, String email, String content,
                                   Long articleId, Long userId, Long parentId, String ip);
 
+    UnifyResponse<String> deleteById(long id, long userId);
+
     /**
      * 根据评论 id 获取子评论信息
      *
@@ -52,4 +54,12 @@ public interface ICommentService {
      * @return 评论信息
      */
     UnifyResponse<CommentResultItem> getCommentById(Long id);
+
+    /**
+     * 根据用户 id 获取评论信息列表
+     *
+     * @param userId 用户 id
+     * @return
+     */
+    UnifyResponse<ArrayList<CommentResultItem>> getCommentByUserId(long userId, int page, int pageSize);
 }

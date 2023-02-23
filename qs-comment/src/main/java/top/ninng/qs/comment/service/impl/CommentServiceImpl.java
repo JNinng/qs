@@ -85,6 +85,19 @@ public class CommentServiceImpl implements ICommentService {
         return UnifyResponse.fail("邮箱错误！", null);
     }
 
+    @Override
+    public UnifyResponse<String> deleteById(long id, long userId) {
+        Comment comment = commentMapper.selectByPrimaryKey(id);
+        if (EmptyCheck.notEmpty(comment)) {
+            if (userId == comment.getUserId()) {
+                if (commentMapper.deleteByPrimaryKey(id) > 0) {
+                    return UnifyResponse.ok();
+                }
+            }
+        }
+        return UnifyResponse.fail("id 错误！", null);
+    }
+
     /**
      * 获取指定评论的子评论
      *
@@ -177,6 +190,30 @@ public class CommentServiceImpl implements ICommentService {
                 }
             }
             return UnifyResponse.ok(commentResultItem);
+        }
+        return UnifyResponse.ok("暂无评论！", null);
+    }
+
+    @Override
+    public UnifyResponse<ArrayList<CommentResultItem>> getCommentByUserId(long userId, int page, int pageSize) {
+        // 处理网页分页逻辑和数据库分页查询逻辑
+        page = (page <= 0) ? 1 : page;
+        // 持久层数据查询当前评论信息
+        ArrayList<Comment> commentList = commentMapper.selectCommentByUserId(userId, (page - 1) * pageSize, pageSize);
+        int count = commentMapper.selectCommentByUserIdCount(userId);
+        if (commentList.size() > 0) {
+            ArrayList<CommentResultItem> commentsResultList = commentList.stream()
+                    // id 混淆处理
+                    .peek(this::obfuscatorId)
+                    .peek(this::setHeadPortrait)
+                    // 重新封装响应
+                    .map(comment -> new CommentResultItem(comment, null))
+                    // 转化输出列表
+                    .collect(Collectors.toCollection(ArrayList::new));
+            commentsResultList = commentsResultList.stream().peek(commentResultItem -> {
+                commentResultItem.setParentCount(count);
+            }).collect(Collectors.toCollection(ArrayList::new));
+            return UnifyResponse.ok(commentsResultList);
         }
         return UnifyResponse.ok("暂无评论！", null);
     }

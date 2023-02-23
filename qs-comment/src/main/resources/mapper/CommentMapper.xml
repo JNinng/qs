@@ -50,6 +50,20 @@
         id != #{parentId,jdbcType=INTEGER}
     </select>
 
+    <select id="selectCommentByUserId" resultType="top.ninng.qs.comment.entity.Comment" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from comment
+        where user_id=#{userId,jdbcType=INTEGER}
+        limit #{l,jdbcType=INTEGER},#{r,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectCommentByUserIdCount" resultType="java.lang.Integer">
+        select count(*)
+        from comment
+        where user_id = #{userId,jdbcType=INTEGER}
+    </select>
+
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete
         from comment
