@@ -60,6 +60,10 @@ public class User implements Serializable {
      * 用户头像
      */
     private String headPortrait;
+    /**
+     * 用户简介
+     */
+    private String info;
 
     /**
      * 创建时间
@@ -129,6 +133,14 @@ public class User implements Serializable {
      */
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
     }
 
     public String getNickname() {
@@ -209,6 +221,7 @@ public class User implements Serializable {
         result = prime * result + ((getStatus() == null) ? 0 : getStatus().hashCode());
         result = prime * result + ((getHeadPortrait() == null) ? 0 : getHeadPortrait().hashCode());
         result = prime * result + ((getNickname() == null) ? 0 : getNickname().hashCode());
+        result = prime * result + ((getInfo() == null) ? 0 : getInfo().hashCode());
         return result;
     }
 
@@ -240,7 +253,9 @@ public class User implements Serializable {
                 && (this.getHeadPortrait() == null ? other.getHeadPortrait() == null :
                 this.getHeadPortrait().equals(other.getHeadPortrait()))
                 && (this.getNickname() == null ? other.getNickname() == null :
-                this.getNickname().equals(other.getNickname()));
+                this.getNickname().equals(other.getNickname()))
+                && (this.getInfo() == null ? other.getInfo() == null :
+                this.getInfo().equals(other.getInfo()));
     }
 
     @Override
@@ -256,6 +271,7 @@ public class User implements Serializable {
                 ", deleteStatus=" + deleteStatus +
                 ", status=" + status +
                 ", headPortrait='" + headPortrait + '\'' +
+                ", info='" + info + '\'' +
                 '}';
     }
 }

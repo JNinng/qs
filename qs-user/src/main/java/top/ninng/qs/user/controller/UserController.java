@@ -6,11 +6,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import top.ninng.qs.common.entity.UnifyResponse;
+import top.ninng.qs.common.utils.EmptyCheck;
 import top.ninng.qs.common.utils.IdObfuscator;
 import top.ninng.qs.user.config.IdConfig;
 import top.ninng.qs.user.entity.LoginResult;
 import top.ninng.qs.user.entity.UserInfo;
 import top.ninng.qs.user.service.IUserService;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 用户控制器
@@ -87,5 +90,29 @@ public class UserController {
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
     public UnifyResponse<String> logout() {
         return iUserService.logout();
+    }
+
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    public UnifyResponse<String> update(
+            @RequestParam(value = "nickname", required = false) String nickname,
+            @RequestParam(value = "email", required = false) String email,
+            @RequestParam(value = "info", required = false) String info,
+            @RequestParam(value = "headPortrait", required = false) String headPortrait,
+            @RequestParam(value = "oldPassword", required = false) String oldPassword,
+            @RequestParam(value = "password", required = false) String password,
+            HttpServletRequest request) {
+        if (EmptyCheck.notEmpty(password)) {
+            if (password.length() < 6) {
+                return UnifyResponse.fail("密码过于简单！", null);
+            }
+        }
+        String loginId = request.getHeader("user_id");
+        long userId = 0L;
+        if (EmptyCheck.notEmpty(loginId)) {
+            userId = Long.parseLong(loginId);
+        } else {
+            return UnifyResponse.fail("id 错误！", null);
+        }
+        return iUserService.update(userId, nickname, email, info, headPortrait, oldPassword, password);
     }
 }

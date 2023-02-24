@@ -86,7 +86,7 @@ public class UserServiceImpl implements IUserService {
             userInfo.setName(user.getUserName());
             userInfo.setNickname(user.getNickname());
             userInfo.setEmail(user.getEmail());
-            userInfo.setInfo(user.getUserName());
+            userInfo.setInfo(user.getInfo());
             userInfo.setCreateTime(user.getCreateTime());
             userInfo.setHeadPortrait(user.getHeadPortrait());
             userInfo.setSite("");
@@ -142,5 +142,31 @@ public class UserServiceImpl implements IUserService {
     public UnifyResponse<String> logout() {
         StpUtil.logout();
         return UnifyResponse.ok("已登出！");
+    }
+
+    @Override
+    public UnifyResponse<String> update(long userId, String nickname, String email, String info, String headPortrait,
+                                        String oldPassword, String password) {
+        User user = new User();
+        user.setId(Math.toIntExact(userId));
+        user.setNickname(nickname);
+        user.setEmail(email);
+        user.setInfo(info);
+        user.setHeadPortrait(headPortrait);
+        if (EmptyCheck.notEmpty(password)) {
+            User user1 = userMapper.selectByPrimaryKey(userId);
+            if (EmptyCheck.notEmpty(user1)) {
+                if (oldPassword.equals(user1.getUserPassword())) {
+                    user.setUserPassword(password);
+                } else {
+                    return UnifyResponse.fail("原密码有误！", null);
+                }
+            }
+        }
+        int i = userMapper.updateByPrimaryKeySelective(user);
+        if (i > 0) {
+            return UnifyResponse.ok();
+        }
+        return UnifyResponse.fail("更新失败！", null);
     }
 }
