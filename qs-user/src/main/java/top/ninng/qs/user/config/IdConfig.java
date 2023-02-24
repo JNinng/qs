@@ -28,6 +28,10 @@ public class IdConfig {
      * tag id 混淆模式索引
      */
     public static int TAG_ID = 3;
+    /**
+     * authorization id 混淆模式索引
+     */
+    public static int AUTHORIZATION_ID = 4;
 
     /**
      * 获取混淆器
@@ -37,7 +41,8 @@ public class IdConfig {
     @Bean
     public IdObfuscator getIdObfuscator() {
         return new IdObfuscator().init(
-                new String[]{"dev userId key", "dev articleId key", "dev commentId key", "dev tagId key"},
-                new int[]{8, 12, 12, 8});
+                new String[]{"dev userId key", "dev articleId key", "dev commentId key", "dev tagId key",
+                        "dev authorizationId key"},
+                new int[]{8, 12, 12, 8, 8});
     }
 }

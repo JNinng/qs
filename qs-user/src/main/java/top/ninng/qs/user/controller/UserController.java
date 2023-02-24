@@ -9,11 +9,14 @@ import top.ninng.qs.common.entity.UnifyResponse;
 import top.ninng.qs.common.utils.EmptyCheck;
 import top.ninng.qs.common.utils.IdObfuscator;
 import top.ninng.qs.user.config.IdConfig;
+import top.ninng.qs.user.entity.Authorization;
 import top.ninng.qs.user.entity.LoginResult;
 import top.ninng.qs.user.entity.UserInfo;
+import top.ninng.qs.user.service.IAuthorizationService;
 import top.ninng.qs.user.service.IUserService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 
 /**
  * 用户控制器
@@ -27,11 +30,27 @@ import javax.servlet.http.HttpServletRequest;
 public class UserController {
 
     public IUserService iUserService;
+    public IAuthorizationService iAuthorizationService;
     public IdObfuscator idObfuscator;
 
-    public UserController(IUserService iUserService, IdObfuscator idObfuscator) {
+    public UserController(IUserService iUserService, IAuthorizationService iAuthorizationService,
+                          IdObfuscator idObfuscator) {
         this.iUserService = iUserService;
+        this.iAuthorizationService = iAuthorizationService;
         this.idObfuscator = idObfuscator;
+    }
+
+    @RequestMapping(value = "/checkAuthorization", method = RequestMethod.POST)
+    public UnifyResponse<String> checkAuthentication(
+            @RequestParam(value = "userId") String userId,
+            @RequestParam(value = "code") String code) {
+        long[] realUserId = new long[]{0L};
+        if (EmptyCheck.notEmpty(userId)) {
+            realUserId = idObfuscator.decode(userId, IdConfig.USER_ID);
+        } else {
+            return UnifyResponse.fail("错误！", null);
+        }
+        return iAuthorizationService.getAuthorization(realUserId[0], code);
     }
 
     /**
@@ -50,6 +69,32 @@ public class UserController {
             }
         }
         return UnifyResponse.fail("您还未登录！");
+    }
+
+    @RequestMapping(value = "/deleteAuthorization", method = RequestMethod.POST)
+    public UnifyResponse<String> deleteAuthentication(
+            @RequestParam(value = "id") String id,
+            HttpServletRequest request) {
+        String loginId = request.getHeader("user_id");
+        long userId = 0L;
+        long[] realId = idObfuscator.decode(id, IdConfig.AUTHORIZATION_ID);
+        if (EmptyCheck.isEmpty(loginId) || realId.length == 0) {
+            return UnifyResponse.fail("id 错误！", null);
+        }
+        userId = Long.parseLong(loginId);
+        return iAuthorizationService.deleteAuthorization(realId[0], userId);
+    }
+
+    @RequestMapping(value = "/getAuthorization", method = RequestMethod.POST)
+    public UnifyResponse<ArrayList<Authorization>> getAuthentication(HttpServletRequest request) {
+        String loginId = request.getHeader("user_id");
+        long userId = 0L;
+        if (EmptyCheck.notEmpty(loginId)) {
+            userId = Long.parseLong(loginId);
+        } else {
+            return UnifyResponse.fail("id 错误！", null);
+        }
+        return iAuthorizationService.getAuthorizationList(userId);
     }
 
     /**
@@ -90,6 +135,21 @@ public class UserController {
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
     public UnifyResponse<String> logout() {
         return iUserService.logout();
+    }
+
+    @RequestMapping(value = "/setAuthorization", method = RequestMethod.POST)
+    public UnifyResponse<String> setAuthentication(
+            @RequestParam(value = "code") String code,
+            @RequestParam(value = "info") String info,
+            HttpServletRequest request) {
+        String loginId = request.getHeader("user_id");
+        long userId = 0L;
+        if (EmptyCheck.notEmpty(loginId)) {
+            userId = Long.parseLong(loginId);
+        } else {
+            return UnifyResponse.fail("id 错误！", null);
+        }
+        return iAuthorizationService.setAuthorization(userId, code, info);
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
