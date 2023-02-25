@@ -58,6 +58,10 @@ public class ArticleServiceImpl implements IArticleService {
                 System.out.println("score: " + log);
                 String scorePool = "qs:score:article:day:" + date;
                 redisTemplate.opsForZSet().incrementScore(scorePool, id, log);
+                // 加分后增加资源访问量
+                Article article = articleMapper.selectByPrimaryKey(id);
+                article.setPageView(article.getPageView() + 1);
+                articleMapper.updateByPrimaryKey(article);
                 break;
             case "user":
                 // TODO: 用户模式
