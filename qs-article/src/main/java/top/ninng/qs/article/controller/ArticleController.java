@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import top.ninng.qs.article.config.IdConfig;
 import top.ninng.qs.article.entity.*;
 import top.ninng.qs.article.service.IArticleService;
+import top.ninng.qs.article.service.IFavoriteService;
 import top.ninng.qs.article.utils.Ip;
 import top.ninng.qs.common.entity.UnifyResponse;
 import top.ninng.qs.common.utils.EmptyCheck;
@@ -26,10 +27,13 @@ import java.util.Date;
 public class ArticleController {
 
     IArticleService iArticleService;
+    IFavoriteService iFavoriteService;
     IdObfuscator idObfuscator;
 
-    public ArticleController(IArticleService iArticleService, IdObfuscator idObfuscator) {
+    public ArticleController(IArticleService iArticleService, IFavoriteService iFavoriteService,
+                             IdObfuscator idObfuscator) {
         this.iArticleService = iArticleService;
+        this.iFavoriteService = iFavoriteService;
         this.idObfuscator = idObfuscator;
         System.out.println(idObfuscator.encode(1, IdConfig.ARTICLE_ID));
     }
@@ -56,6 +60,21 @@ public class ArticleController {
             return iArticleService.addScore(realId[0], mode, visitor, time);
         }
         return UnifyResponse.fail("id 错误！", null);
+    }
+
+    @RequestMapping(value = "/deleteFavorite", method = RequestMethod.POST)
+    public UnifyResponse<String> deleteFavorite(
+            @RequestParam(value = "articleId") String articleIdStr,
+            HttpServletRequest request) {
+        String userIdStr = request.getHeader("user_id");
+        long[] articleId = idObfuscator.decode(articleIdStr, IdConfig.ARTICLE_ID);
+        long userId = 0L;
+        if (EmptyCheck.notEmpty(userIdStr) && articleId.length > 0) {
+            userId = Long.parseLong(userIdStr);
+        } else {
+            return UnifyResponse.fail("id 错误！", null);
+        }
+        return iFavoriteService.deleteFavorite(articleId[0], userId);
     }
 
     /**
@@ -165,6 +184,18 @@ public class ArticleController {
         return iArticleService.getArticleTimelineMonthResult(date);
     }
 
+    @RequestMapping(value = "/getFavorite", method = RequestMethod.POST)
+    public UnifyResponse<FavoriteInfo> getFavorite(
+            @RequestParam(value = "userId") String userIdStr,
+            @RequestParam(value = "page") int page,
+            @RequestParam(value = "pageSize") int pageSize) {
+        long[] userId = idObfuscator.decode(userIdStr, IdConfig.USER_ID);
+        if (userId.length > 0) {
+            return iFavoriteService.getFavorite(userId[0], page, pageSize);
+        }
+        return UnifyResponse.fail("id 错误！", null);
+    }
+
     @RequestMapping(value = "/hot", method = RequestMethod.POST)
     public UnifyResponse<ArticleIdListPageResult> getHot() {
         return iArticleService.getHot();
@@ -238,6 +269,21 @@ public class ArticleController {
             return iArticleService.saveIndex(realId[0]);
         }
         return UnifyResponse.fail("id 错误！", null);
+    }
+
+    @RequestMapping(value = "/setFavorite", method = RequestMethod.POST)
+    public UnifyResponse<String> setFavorite(
+            @RequestParam(value = "articleId") String articleIdStr,
+            HttpServletRequest request) {
+        String userIdStr = request.getHeader("user_id");
+        long[] articleId = idObfuscator.decode(articleIdStr, IdConfig.ARTICLE_ID);
+        long userId = 0L;
+        if (EmptyCheck.notEmpty(userIdStr) && articleId.length > 0) {
+            userId = Long.parseLong(userIdStr);
+        } else {
+            return UnifyResponse.fail("id 错误！", null);
+        }
+        return iFavoriteService.setFavorite(articleId[0], userId);
     }
 
     /**
