@@ -11,6 +11,7 @@ import top.ninng.qs.user.entity.ArticleData;
 import top.ninng.qs.user.entity.LoginResult;
 import top.ninng.qs.user.entity.User;
 import top.ninng.qs.user.entity.UserInfo;
+import top.ninng.qs.user.mapper.RelationMapper;
 import top.ninng.qs.user.mapper.UserMapper;
 import top.ninng.qs.user.service.IUserService;
 
@@ -39,11 +40,14 @@ public class UserServiceImpl implements IUserService {
     //    }
 
     UserMapper userMapper;
+    RelationMapper relationMapper;
     ArticleClient articleClient;
     IdObfuscator idObfuscator;
 
-    public UserServiceImpl(UserMapper userMapper, ArticleClient articleClient, IdObfuscator idObfuscator) {
+    public UserServiceImpl(UserMapper userMapper, RelationMapper relationMapper, ArticleClient articleClient,
+                           IdObfuscator idObfuscator) {
         this.userMapper = userMapper;
+        this.relationMapper = relationMapper;
         this.articleClient = articleClient;
         this.idObfuscator = idObfuscator;
     }
@@ -90,10 +94,8 @@ public class UserServiceImpl implements IUserService {
             userInfo.setCreateTime(user.getCreateTime());
             userInfo.setHeadPortrait(user.getHeadPortrait());
             userInfo.setSite("");
-            // TODO: 获取关注数量
-            userInfo.setFollowNumber(44);
-            // TODO: 获取粉丝数量
-            userInfo.setFansNumber(4);
+            userInfo.setFollowNumber(relationMapper.selectFollowCount(user.getId()));
+            userInfo.setFansNumber(relationMapper.selectFansCount(user.getId()));
             UnifyResponse<ArticleData> response = articleClient.getUserArticleData(id);
             if (EmptyCheck.notEmpty(response)) {
                 ArticleData data = response.getData();
