@@ -11,8 +11,10 @@ import top.ninng.qs.common.utils.IdObfuscator;
 import top.ninng.qs.user.config.IdConfig;
 import top.ninng.qs.user.entity.Authorization;
 import top.ninng.qs.user.entity.LoginResult;
+import top.ninng.qs.user.entity.RelationInfo;
 import top.ninng.qs.user.entity.UserInfo;
 import top.ninng.qs.user.service.IAuthorizationService;
+import top.ninng.qs.user.service.IRelationService;
 import top.ninng.qs.user.service.IUserService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,13 +33,31 @@ public class UserController {
 
     public IUserService iUserService;
     public IAuthorizationService iAuthorizationService;
+    public IRelationService iRelationService;
     public IdObfuscator idObfuscator;
 
     public UserController(IUserService iUserService, IAuthorizationService iAuthorizationService,
-                          IdObfuscator idObfuscator) {
+                          IRelationService iRelationService, IdObfuscator idObfuscator) {
         this.iUserService = iUserService;
         this.iAuthorizationService = iAuthorizationService;
+        this.iRelationService = iRelationService;
         this.idObfuscator = idObfuscator;
+    }
+
+    @RequestMapping(value = "/cancelFollow", method = RequestMethod.POST)
+    public UnifyResponse<String> cancelFollow(
+            @RequestParam(value = "bUserId") String bUserIdStr,
+            HttpServletRequest request) {
+        String aUserIdStr = request.getHeader("user_id");
+        if (EmptyCheck.isEmpty(aUserIdStr)) {
+            return UnifyResponse.fail("id 错误！", null);
+        }
+        long aUserId = Long.parseLong(aUserIdStr);
+        long[] bUserId = idObfuscator.decode(bUserIdStr, IdConfig.USER_ID);
+        if (bUserId.length > 0) {
+            return iRelationService.cancelFollow(aUserId, bUserId[0]);
+        }
+        return UnifyResponse.fail("id 错误！", null);
     }
 
     @RequestMapping(value = "/checkAuthorization", method = RequestMethod.POST)
@@ -85,6 +105,22 @@ public class UserController {
         return iAuthorizationService.deleteAuthorization(realId[0], userId);
     }
 
+    @RequestMapping(value = "/follow", method = RequestMethod.POST)
+    public UnifyResponse<String> follow(
+            @RequestParam(value = "bUserId") String bUserIdStr,
+            HttpServletRequest request) {
+        String aUserIdStr = request.getHeader("user_id");
+        if (EmptyCheck.isEmpty(aUserIdStr)) {
+            return UnifyResponse.fail("id 错误！", null);
+        }
+        long aUserId = Long.parseLong(aUserIdStr);
+        long[] bUserId = idObfuscator.decode(bUserIdStr, IdConfig.USER_ID);
+        if (bUserId.length > 0) {
+            return iRelationService.setFollow(aUserId, bUserId[0]);
+        }
+        return UnifyResponse.fail("id 错误！", null);
+    }
+
     @RequestMapping(value = "/getAuthorization", method = RequestMethod.POST)
     public UnifyResponse<ArrayList<Authorization>> getAuthentication(HttpServletRequest request) {
         String loginId = request.getHeader("user_id");
@@ -95,6 +131,30 @@ public class UserController {
             return UnifyResponse.fail("id 错误！", null);
         }
         return iAuthorizationService.getAuthorizationList(userId);
+    }
+
+    @RequestMapping(value = "/getFans", method = RequestMethod.POST)
+    public UnifyResponse<RelationInfo> getFans(
+            @RequestParam(value = "id") String id,
+            @RequestParam(value = "page") int page,
+            @RequestParam(value = "pageSize") int pageSize) {
+        long[] userId = idObfuscator.decode(id, IdConfig.USER_ID);
+        if (userId.length > 0) {
+            return iRelationService.getFansByPage(userId[0], page, pageSize);
+        }
+        return UnifyResponse.fail("id 错误！", null);
+    }
+
+    @RequestMapping(value = "/getFollow", method = RequestMethod.POST)
+    public UnifyResponse<RelationInfo> getFollow(
+            @RequestParam(value = "id") String id,
+            @RequestParam(value = "page") int page,
+            @RequestParam(value = "pageSize") int pageSize) {
+        long[] userId = idObfuscator.decode(id, IdConfig.USER_ID);
+        if (userId.length > 0) {
+            return iRelationService.getFollowByPage(userId[0], page, pageSize);
+        }
+        return UnifyResponse.fail("id 错误！", null);
     }
 
     /**
