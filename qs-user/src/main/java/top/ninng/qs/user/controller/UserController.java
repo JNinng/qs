@@ -6,11 +6,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import top.ninng.qs.common.entity.UnifyResponse;
+import top.ninng.qs.common.utils.EmptyCheck;
 import top.ninng.qs.common.utils.IdObfuscator;
 import top.ninng.qs.user.config.IdConfig;
+import top.ninng.qs.user.entity.Authorization;
 import top.ninng.qs.user.entity.LoginResult;
+import top.ninng.qs.user.entity.RelationInfo;
 import top.ninng.qs.user.entity.UserInfo;
+import top.ninng.qs.user.service.IAuthorizationService;
+import top.ninng.qs.user.service.IRelationService;
 import top.ninng.qs.user.service.IUserService;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 
 /**
  * 用户控制器
@@ -24,11 +32,45 @@ import top.ninng.qs.user.service.IUserService;
 public class UserController {
 
     public IUserService iUserService;
+    public IAuthorizationService iAuthorizationService;
+    public IRelationService iRelationService;
     public IdObfuscator idObfuscator;
 
-    public UserController(IUserService iUserService, IdObfuscator idObfuscator) {
+    public UserController(IUserService iUserService, IAuthorizationService iAuthorizationService,
+                          IRelationService iRelationService, IdObfuscator idObfuscator) {
         this.iUserService = iUserService;
+        this.iAuthorizationService = iAuthorizationService;
+        this.iRelationService = iRelationService;
         this.idObfuscator = idObfuscator;
+    }
+
+    @RequestMapping(value = "/cancelFollow", method = RequestMethod.POST)
+    public UnifyResponse<String> cancelFollow(
+            @RequestParam(value = "bUserId") String bUserIdStr,
+            HttpServletRequest request) {
+        String aUserIdStr = request.getHeader("user_id");
+        if (EmptyCheck.isEmpty(aUserIdStr)) {
+            return UnifyResponse.fail("id 错误！", null);
+        }
+        long aUserId = Long.parseLong(aUserIdStr);
+        long[] bUserId = idObfuscator.decode(bUserIdStr, IdConfig.USER_ID);
+        if (bUserId.length > 0) {
+            return iRelationService.cancelFollow(aUserId, bUserId[0]);
+        }
+        return UnifyResponse.fail("id 错误！", null);
+    }
+
+    @RequestMapping(value = "/checkAuthorization", method = RequestMethod.POST)
+    public UnifyResponse<String> checkAuthentication(
+            @RequestParam(value = "userId") String userId,
+            @RequestParam(value = "code") String code) {
+        long[] realUserId = new long[]{0L};
+        if (EmptyCheck.notEmpty(userId)) {
+            realUserId = idObfuscator.decode(userId, IdConfig.USER_ID);
+        } else {
+            return UnifyResponse.fail("错误！", null);
+        }
+        return iAuthorizationService.getAuthorization(realUserId[0], code);
     }
 
     /**
@@ -47,6 +89,72 @@ public class UserController {
             }
         }
         return UnifyResponse.fail("您还未登录！");
+    }
+
+    @RequestMapping(value = "/deleteAuthorization", method = RequestMethod.POST)
+    public UnifyResponse<String> deleteAuthentication(
+            @RequestParam(value = "id") String id,
+            HttpServletRequest request) {
+        String loginId = request.getHeader("user_id");
+        long userId = 0L;
+        long[] realId = idObfuscator.decode(id, IdConfig.AUTHORIZATION_ID);
+        if (EmptyCheck.isEmpty(loginId) || realId.length == 0) {
+            return UnifyResponse.fail("id 错误！", null);
+        }
+        userId = Long.parseLong(loginId);
+        return iAuthorizationService.deleteAuthorization(realId[0], userId);
+    }
+
+    @RequestMapping(value = "/follow", method = RequestMethod.POST)
+    public UnifyResponse<String> follow(
+            @RequestParam(value = "bUserId") String bUserIdStr,
+            HttpServletRequest request) {
+        String aUserIdStr = request.getHeader("user_id");
+        if (EmptyCheck.isEmpty(aUserIdStr)) {
+            return UnifyResponse.fail("id 错误！", null);
+        }
+        long aUserId = Long.parseLong(aUserIdStr);
+        long[] bUserId = idObfuscator.decode(bUserIdStr, IdConfig.USER_ID);
+        if (bUserId.length > 0) {
+            return iRelationService.setFollow(aUserId, bUserId[0]);
+        }
+        return UnifyResponse.fail("id 错误！", null);
+    }
+
+    @RequestMapping(value = "/getAuthorization", method = RequestMethod.POST)
+    public UnifyResponse<ArrayList<Authorization>> getAuthentication(HttpServletRequest request) {
+        String loginId = request.getHeader("user_id");
+        long userId = 0L;
+        if (EmptyCheck.notEmpty(loginId)) {
+            userId = Long.parseLong(loginId);
+        } else {
+            return UnifyResponse.fail("id 错误！", null);
+        }
+        return iAuthorizationService.getAuthorizationList(userId);
+    }
+
+    @RequestMapping(value = "/getFans", method = RequestMethod.POST)
+    public UnifyResponse<RelationInfo> getFans(
+            @RequestParam(value = "id") String id,
+            @RequestParam(value = "page") int page,
+            @RequestParam(value = "pageSize") int pageSize) {
+        long[] userId = idObfuscator.decode(id, IdConfig.USER_ID);
+        if (userId.length > 0) {
+            return iRelationService.getFansByPage(userId[0], page, pageSize);
+        }
+        return UnifyResponse.fail("id 错误！", null);
+    }
+
+    @RequestMapping(value = "/getFollow", method = RequestMethod.POST)
+    public UnifyResponse<RelationInfo> getFollow(
+            @RequestParam(value = "id") String id,
+            @RequestParam(value = "page") int page,
+            @RequestParam(value = "pageSize") int pageSize) {
+        long[] userId = idObfuscator.decode(id, IdConfig.USER_ID);
+        if (userId.length > 0) {
+            return iRelationService.getFollowByPage(userId[0], page, pageSize);
+        }
+        return UnifyResponse.fail("id 错误！", null);
     }
 
     /**
@@ -87,5 +195,44 @@ public class UserController {
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
     public UnifyResponse<String> logout() {
         return iUserService.logout();
+    }
+
+    @RequestMapping(value = "/setAuthorization", method = RequestMethod.POST)
+    public UnifyResponse<String> setAuthentication(
+            @RequestParam(value = "code") String code,
+            @RequestParam(value = "info") String info,
+            HttpServletRequest request) {
+        String loginId = request.getHeader("user_id");
+        long userId = 0L;
+        if (EmptyCheck.notEmpty(loginId)) {
+            userId = Long.parseLong(loginId);
+        } else {
+            return UnifyResponse.fail("id 错误！", null);
+        }
+        return iAuthorizationService.setAuthorization(userId, code, info);
+    }
+
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    public UnifyResponse<String> update(
+            @RequestParam(value = "nickname", required = false) String nickname,
+            @RequestParam(value = "email", required = false) String email,
+            @RequestParam(value = "info", required = false) String info,
+            @RequestParam(value = "headPortrait", required = false) String headPortrait,
+            @RequestParam(value = "oldPassword", required = false) String oldPassword,
+            @RequestParam(value = "password", required = false) String password,
+            HttpServletRequest request) {
+        if (EmptyCheck.notEmpty(password)) {
+            if (password.length() < 6) {
+                return UnifyResponse.fail("密码过于简单！", null);
+            }
+        }
+        String loginId = request.getHeader("user_id");
+        long userId = 0L;
+        if (EmptyCheck.notEmpty(loginId)) {
+            userId = Long.parseLong(loginId);
+        } else {
+            return UnifyResponse.fail("id 错误！", null);
+        }
+        return iUserService.update(userId, nickname, email, info, headPortrait, oldPassword, password);
     }
 }

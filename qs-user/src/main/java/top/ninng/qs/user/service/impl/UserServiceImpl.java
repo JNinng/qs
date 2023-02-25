@@ -11,6 +11,7 @@ import top.ninng.qs.user.entity.ArticleData;
 import top.ninng.qs.user.entity.LoginResult;
 import top.ninng.qs.user.entity.User;
 import top.ninng.qs.user.entity.UserInfo;
+import top.ninng.qs.user.mapper.RelationMapper;
 import top.ninng.qs.user.mapper.UserMapper;
 import top.ninng.qs.user.service.IUserService;
 
@@ -39,11 +40,14 @@ public class UserServiceImpl implements IUserService {
     //    }
 
     UserMapper userMapper;
+    RelationMapper relationMapper;
     ArticleClient articleClient;
     IdObfuscator idObfuscator;
 
-    public UserServiceImpl(UserMapper userMapper, ArticleClient articleClient, IdObfuscator idObfuscator) {
+    public UserServiceImpl(UserMapper userMapper, RelationMapper relationMapper, ArticleClient articleClient,
+                           IdObfuscator idObfuscator) {
         this.userMapper = userMapper;
+        this.relationMapper = relationMapper;
         this.articleClient = articleClient;
         this.idObfuscator = idObfuscator;
     }
@@ -86,14 +90,12 @@ public class UserServiceImpl implements IUserService {
             userInfo.setName(user.getUserName());
             userInfo.setNickname(user.getNickname());
             userInfo.setEmail(user.getEmail());
-            userInfo.setInfo(user.getUserName());
+            userInfo.setInfo(user.getInfo());
             userInfo.setCreateTime(user.getCreateTime());
             userInfo.setHeadPortrait(user.getHeadPortrait());
             userInfo.setSite("");
-            // TODO: 获取关注数量
-            userInfo.setFollowNumber(44);
-            // TODO: 获取粉丝数量
-            userInfo.setFansNumber(4);
+            userInfo.setFollowNumber(relationMapper.selectFollowCount(user.getId()));
+            userInfo.setFansNumber(relationMapper.selectFansCount(user.getId()));
             UnifyResponse<ArticleData> response = articleClient.getUserArticleData(id);
             if (EmptyCheck.notEmpty(response)) {
                 ArticleData data = response.getData();
@@ -142,5 +144,31 @@ public class UserServiceImpl implements IUserService {
     public UnifyResponse<String> logout() {
         StpUtil.logout();
         return UnifyResponse.ok("已登出！");
+    }
+
+    @Override
+    public UnifyResponse<String> update(long userId, String nickname, String email, String info, String headPortrait,
+                                        String oldPassword, String password) {
+        User user = new User();
+        user.setId(Math.toIntExact(userId));
+        user.setNickname(nickname);
+        user.setEmail(email);
+        user.setInfo(info);
+        user.setHeadPortrait(headPortrait);
+        if (EmptyCheck.notEmpty(password)) {
+            User user1 = userMapper.selectByPrimaryKey(userId);
+            if (EmptyCheck.notEmpty(user1)) {
+                if (oldPassword.equals(user1.getUserPassword())) {
+                    user.setUserPassword(password);
+                } else {
+                    return UnifyResponse.fail("原密码有误！", null);
+                }
+            }
+        }
+        int i = userMapper.updateByPrimaryKeySelective(user);
+        if (i > 0) {
+            return UnifyResponse.ok();
+        }
+        return UnifyResponse.fail("更新失败！", null);
     }
 }

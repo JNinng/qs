@@ -44,4 +44,16 @@ public interface IUserService {
      * @return 登出结果
      */
     UnifyResponse<String> logout();
+
+    /**
+     * 更新用户信息
+     *
+     * @param userId   用户 id
+     * @param nickname 昵称
+     * @param email    邮箱
+     * @param info     简介
+     * @return 更新结果
+     */
+    UnifyResponse<String> update(long userId, String nickname, String email, String info, String headPortrait,
+                                 String oldPassword, String password);
 }

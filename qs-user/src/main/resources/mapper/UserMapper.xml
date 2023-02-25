@@ -15,12 +15,13 @@
         <result property="deleteStatus" column="delete_status" jdbcType="BIT"/>
         <result property="status" column="status" jdbcType="TINYINT"/>
         <result property="headPortrait" column="head_portrait" jdbcType="VARCHAR"/>
+        <result property="info" column="info" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,user_name,user_nickname,user_password,
         email,create_time,update_time,
-        delete_status,status,head_portrait
+        delete_status,status,head_portrait,info
     </sql>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -48,10 +49,11 @@
         insert into user
         ( id, user_name, user_password
         , email, create_time, update_time
-        , delete_status, status, head_portrait)
+        , delete_status, status, head_portrait, info)
         values ( #{id,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{userPassword,jdbcType=VARCHAR}
                , #{email,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
-               , #{deleteStatus,jdbcType=BIT}, #{status,jdbcType=TINYINT}, #{headPortrait,jdbcType=VARCHAR})
+               , #{deleteStatus,jdbcType=BIT}, #{status,jdbcType=TINYINT}, #{headPortrait,jdbcType=VARCHAR}
+               , #{info,jdbcType=VARCHAR})
     </insert>
 
     <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="top.ninng.qs.user.entity.User"
@@ -68,6 +70,7 @@
             <if test="deleteStatus != null">delete_status,</if>
             <if test="status != null">status,</if>
             <if test="headPortrait != null">head_portrait,</if>
+            <if test="info != null">info,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id,jdbcType=INTEGER},</if>
@@ -80,6 +83,7 @@
             <if test="deleteStatus != null">#{deleteStatus,jdbcType=BIT},</if>
             <if test="status != null">#{status,jdbcType=TINYINT},</if>
             <if test="headPortrait != null">#{headPortrait,jdbcType=VARCHAR},</if>
+            <if test="info != null">#{info,jdbcType=VARCHAR},</if>
         </trim>
     </insert>
 
@@ -113,6 +117,9 @@
             <if test="headPortrait != null">
                 head_portrait = #{headPortrait,jdbcType=VARCHAR},
             </if>
+            <if test="info != null">
+                info = #{info,jdbcType=VARCHAR},
+            </if>
         </set>
         where id = #{id,jdbcType=INTEGER}
     </update>
@@ -127,7 +134,8 @@
             update_time   = #{updateTime,jdbcType=TIMESTAMP},
             delete_status = #{deleteStatus,jdbcType=BIT},
             status        = #{status,jdbcType=TINYINT},
-            head_portrait = #{headPortrait,jdbcType=VARCHAR}
+            head_portrait = #{headPortrait,jdbcType=VARCHAR},
+            info          = #{info,jdbcType=VARCHAR}
         where id = #{id,jdbcType=INTEGER}
     </update>
 </mapper>
