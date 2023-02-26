@@ -9,10 +9,7 @@ import top.ninng.qs.common.entity.UnifyResponse;
 import top.ninng.qs.common.utils.EmptyCheck;
 import top.ninng.qs.common.utils.IdObfuscator;
 import top.ninng.qs.user.config.IdConfig;
-import top.ninng.qs.user.entity.Authorization;
-import top.ninng.qs.user.entity.LoginResult;
-import top.ninng.qs.user.entity.RelationInfo;
-import top.ninng.qs.user.entity.UserInfo;
+import top.ninng.qs.user.entity.*;
 import top.ninng.qs.user.service.IAuthorizationService;
 import top.ninng.qs.user.service.IRelationService;
 import top.ninng.qs.user.service.IUserService;
@@ -195,6 +192,18 @@ public class UserController {
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
     public UnifyResponse<String> logout() {
         return iUserService.logout();
+    }
+
+    /**
+     * 根据 id 查询用户
+     * 内部接口
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/selectById", method = RequestMethod.POST)
+    public UnifyResponse<User> selectUserById(@RequestParam(value = "id") Long id) {
+        return iUserService.selectUserById(id);
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)

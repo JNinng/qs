@@ -150,6 +150,11 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    public UnifyResponse<User> selectUserById(Long id) {
+        return UnifyResponse.ok(userMapper.selectByPrimaryKey(id));
+    }
+
+    @Override
     public UnifyResponse<String> register(String name, String email, String password) {
         String result = "";
         if (EmptyCheck.isEmpty(name) || name.length() > 100) {

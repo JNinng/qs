@@ -1,4 +1,4 @@
-package top.ninng.qs.user.entity;
+package top.ninng.qs.comment.entity;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
@@ -18,6 +18,7 @@ public class User implements Serializable {
     /**
      * id
      */
+    @JSONField(serialize = false)
     private Integer id;
 
     /**
@@ -45,6 +46,7 @@ public class User implements Serializable {
     /**
      * 修改时间
      */
+    @JSONField(serialize = false)
     private Date updateTime;
     /**
      * 删除状态
