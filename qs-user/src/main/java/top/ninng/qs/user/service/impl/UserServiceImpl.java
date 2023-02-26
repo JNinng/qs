@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import top.ninng.qs.common.entity.UnifyResponse;
 import top.ninng.qs.common.utils.EmptyCheck;
 import top.ninng.qs.common.utils.IdObfuscator;
+import top.ninng.qs.common.utils.Validator;
 import top.ninng.qs.user.clients.ArticleClient;
 import top.ninng.qs.user.config.IdConfig;
 import top.ninng.qs.user.entity.ArticleData;
@@ -14,6 +15,8 @@ import top.ninng.qs.user.entity.UserInfo;
 import top.ninng.qs.user.mapper.RelationMapper;
 import top.ninng.qs.user.mapper.UserMapper;
 import top.ninng.qs.user.service.IUserService;
+
+import java.sql.Timestamp;
 
 /**
  * @Author OhmLaw
@@ -144,6 +147,36 @@ public class UserServiceImpl implements IUserService {
     public UnifyResponse<String> logout() {
         StpUtil.logout();
         return UnifyResponse.ok("已登出！");
+    }
+
+    @Override
+    public UnifyResponse<String> register(String name, String email, String password) {
+        String result = "";
+        if (EmptyCheck.isEmpty(name) || name.length() > 100) {
+            return UnifyResponse.fail("用户名有误！", null);
+        }
+        if (EmptyCheck.isEmpty(email) || !Validator.isEmail(email)) {
+            return UnifyResponse.fail("邮箱有误！", null);
+        }
+        if (EmptyCheck.isEmpty(password) || password.length() < 4) {
+            return UnifyResponse.fail("密码过于简单！", null);
+        }
+        User user = userMapper.selectByName(name);
+        if (EmptyCheck.notEmpty(user)) {
+            return UnifyResponse.fail("当前用户名已存在！", null);
+        }
+        user = new User();
+        user.setUserName(name);
+        user.setEmail(email);
+        user.setUserPassword(password);
+        user.setHeadPortrait("空");
+        user.setCreateTime(new Timestamp(System.currentTimeMillis()));
+        user.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        int i = userMapper.insertSelective(user);
+        if (i > 0) {
+            return UnifyResponse.ok("注册成功！", null);
+        }
+        return UnifyResponse.fail("注册失败！", null);
     }
 
     @Override

@@ -197,6 +197,14 @@ public class UserController {
         return iUserService.logout();
     }
 
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    public UnifyResponse<String> register(
+            @RequestParam(value = "name") String name,
+            @RequestParam(value = "email") String email,
+            @RequestParam(value = "password") String password) {
+        return iUserService.register(name, email, password);
+    }
+
     @RequestMapping(value = "/setAuthorization", method = RequestMethod.POST)
     public UnifyResponse<String> setAuthentication(
             @RequestParam(value = "code") String code,

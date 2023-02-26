@@ -46,6 +46,16 @@ public interface IUserService {
     UnifyResponse<String> logout();
 
     /**
+     * 注册
+     *
+     * @param name     名称
+     * @param email    邮箱
+     * @param password 密码
+     * @return 注册结果
+     */
+    UnifyResponse<String> register(String name, String email, String password);
+
+    /**
      * 更新用户信息
      *
      * @param userId   用户 id
