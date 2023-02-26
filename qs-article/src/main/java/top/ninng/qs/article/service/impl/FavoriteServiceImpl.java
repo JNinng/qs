@@ -64,6 +64,15 @@ public class FavoriteServiceImpl implements IFavoriteService {
     }
 
     @Override
+    public UnifyResponse<String> isFavorite(Long articleId, Long userId) {
+        int result = favoriteMapper.selectFavorite(articleId, userId);
+        if (result > 0) {
+            return UnifyResponse.ok("已收藏！", null);
+        }
+        return UnifyResponse.fail("未收藏！", null);
+    }
+
+    @Override
     public UnifyResponse<String> setFavorite(long articleId, long userId) {
         Article article = articleMapper.selectByPrimaryKey(articleId);
         if (EmptyCheck.isEmpty(article)) {

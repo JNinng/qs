@@ -30,6 +30,15 @@ public interface IFavoriteService {
     UnifyResponse<FavoriteInfo> getFavorite(long userId, int page, int pageSize);
 
     /**
+     * 判断是否收藏
+     *
+     * @param articleId 文章 id
+     * @param userId    用户 id
+     * @return 是否收藏
+     */
+    UnifyResponse<String> isFavorite(Long articleId, Long userId);
+
+    /**
      * 收藏文章
      *
      * @param articleId 文章 id

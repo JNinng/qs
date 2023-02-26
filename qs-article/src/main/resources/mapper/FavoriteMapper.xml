@@ -34,6 +34,13 @@
         where user_id = #{userId,jdbcType=INTEGER}
     </select>
 
+    <select id="selectFavorite" resultType="java.lang.Integer">
+        select count(*)
+        from favorite
+        where user_id = #{userId,jdbcType=INTEGER}
+          AND article_id = #{articleId,jdbcType=INTEGER}
+    </select>
+
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete
         from favorite

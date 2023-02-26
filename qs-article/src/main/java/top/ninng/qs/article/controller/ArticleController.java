@@ -241,6 +241,21 @@ public class ArticleController {
         return iArticleService.getUserArticleData(id);
     }
 
+    @RequestMapping(value = "/isFavorite", method = RequestMethod.POST)
+    public UnifyResponse<String> isFavorite(
+            @RequestParam(value = "articleId") String articleIdStr,
+            HttpServletRequest request) {
+        String userIdStr = request.getHeader("user_id");
+        long[] articleId = idObfuscator.decode(articleIdStr, IdConfig.ARTICLE_ID);
+        long userId = 0L;
+        if (EmptyCheck.notEmpty(userIdStr) && articleId.length > 0) {
+            userId = Long.parseLong(userIdStr);
+        } else {
+            return UnifyResponse.fail("登录信息或资源错误！", null);
+        }
+        return iFavoriteService.isFavorite(articleId[0], userId);
+    }
+
     @RequestMapping(value = "/push", method = RequestMethod.POST)
     public UnifyResponse<String> push(
             @RequestParam(value = "authorizationCode") String authorizationCode,

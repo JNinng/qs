@@ -66,6 +66,15 @@ public interface FavoriteMapper {
     Favorite selectByPrimaryKey(Long id);
 
     /**
+     * 查询是否收藏
+     *
+     * @param articleId 文章 id
+     * @param userId    用户 id
+     * @return 是否收藏
+     */
+    int selectFavorite(Long articleId, Long userId);
+
+    /**
      * 查询用户收藏数量
      *
      * @param userId 用户 id
