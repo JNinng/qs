@@ -1,9 +1,11 @@
 package top.ninng.qs.comment.service.impl;
 
 import org.springframework.stereotype.Service;
+import top.ninng.qs.comment.clients.UserClient;
 import top.ninng.qs.comment.config.IdConfig;
 import top.ninng.qs.comment.entity.Comment;
 import top.ninng.qs.comment.entity.CommentResultItem;
+import top.ninng.qs.comment.entity.User;
 import top.ninng.qs.comment.mapper.CommentMapper;
 import top.ninng.qs.comment.service.ICommentService;
 import top.ninng.qs.comment.utils.Validator;
@@ -26,12 +28,14 @@ import java.util.stream.Collectors;
 public class CommentServiceImpl implements ICommentService {
 
     CommentMapper commentMapper;
+    UserClient userClient;
     IdObfuscator idObfuscator;
     int maxCommentLength;
     long defaultCommentId;
 
-    public CommentServiceImpl(CommentMapper commentMapper, IdObfuscator idObfuscator) {
+    public CommentServiceImpl(CommentMapper commentMapper, UserClient userClient, IdObfuscator idObfuscator) {
         this.commentMapper = commentMapper;
+        this.userClient = userClient;
         this.idObfuscator = idObfuscator;
         // TODO: 从数据库获取配置信息 maxCommentLength = Integer.parseInt(getConfig.map().get("COMMENT_LENGTH"));
         maxCommentLength = 500;
@@ -56,9 +60,17 @@ public class CommentServiceImpl implements ICommentService {
                                          Long articleId, Long userId, Long parentId, String ip) {
         if (userId != defaultCommentId) {
             // 登录用户评论处理
-            // TODO: userMapper.selectByPrimaryKey(userId);
-            name = "默认用户1";
-            email = "xx1599xx@163.com";
+            UnifyResponse<User> userUnifyResponse = userClient.selectById(userId);
+            User user = userUnifyResponse.getData();
+            if (EmptyCheck.notEmpty(user) && user.getId() > 0) {
+                if (EmptyCheck.notEmpty(user.getNickname()) && !"".equals(user.getNickname())) {
+                    name = user.getNickname();
+                }
+                email = user.getEmail();
+            } else {
+                name = "默认用户1";
+                email = "xx1599xx@163.com";
+            }
         }
         if (Validator.isEmail(email)) {
             // 评论长度限制
@@ -237,7 +249,13 @@ public class CommentServiceImpl implements ICommentService {
      */
     private void setHeadPortrait(Comment comment) {
         // TODO: 查询评论用户头像 userMapper.selectByPrimaryKey(Long.valueOf(comment.getUserId())).getHeadPortrait()
-        comment.setHeadPortrait("问号-1caa408d-3203-4a84-8b28-ea254c94a2be.png");
+        UnifyResponse<User> userUnifyResponse = userClient.selectById(Long.valueOf(comment.getUserId()));
+        User user = userUnifyResponse.getData();
+        if (EmptyCheck.notEmpty(user)) {
+            comment.setHeadPortrait(user.getHeadPortrait());
+        } else {
+            comment.setHeadPortrait("问号-1caa408d-3203-4a84-8b28-ea254c94a2be.png");
+        }
     }
 
     /**

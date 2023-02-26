@@ -147,6 +147,11 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    public UnifyResponse<User> selectUserById(Long id) {
+        return UnifyResponse.ok(userMapper.selectByPrimaryKey(id));
+    }
+
+    @Override
     public UnifyResponse<String> update(long userId, String nickname, String email, String info, String headPortrait,
                                         String oldPassword, String password) {
         User user = new User();

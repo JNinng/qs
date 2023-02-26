@@ -2,6 +2,7 @@ package top.ninng.qs.user.service;
 
 import top.ninng.qs.common.entity.UnifyResponse;
 import top.ninng.qs.user.entity.LoginResult;
+import top.ninng.qs.user.entity.User;
 import top.ninng.qs.user.entity.UserInfo;
 
 /**
@@ -44,6 +45,14 @@ public interface IUserService {
      * @return 登出结果
      */
     UnifyResponse<String> logout();
+
+    /**
+     * 根据 id 查询用户
+     *
+     * @param id
+     * @return
+     */
+    UnifyResponse<User> selectUserById(Long id);
 
     /**
      * 更新用户信息
