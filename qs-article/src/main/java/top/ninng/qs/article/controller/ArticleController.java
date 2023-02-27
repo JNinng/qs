@@ -256,27 +256,6 @@ public class ArticleController {
         return iFavoriteService.isFavorite(articleId[0], userId);
     }
 
-    @RequestMapping(value = "/push", method = RequestMethod.POST)
-    public UnifyResponse<String> push(
-            @RequestParam(value = "authorizationCode") String authorizationCode,
-            @RequestParam(value = "link") String link,
-            @RequestParam(value = "resourceId") String resourceId) {
-        // TODO: 推送业务
-        return UnifyResponse.ok("", null);
-    }
-
-    @RequestMapping(value = "/receive", method = RequestMethod.POST)
-    public UnifyResponse<String> receive(
-            @RequestParam(value = "authorizationCode") String authorizationCode,
-            @RequestParam(value = "mode") int mode,
-            @RequestParam(value = "title") String title,
-            @RequestParam(value = "content") String content,
-            @RequestParam(value = "tag") ArrayList<String> tag,
-            @RequestParam(value = "dateTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date) {
-        // TODO: 接收业务
-        return UnifyResponse.ok("接收成功！", null);
-    }
-
     @RequestMapping(value = "/saveIndex", method = RequestMethod.POST)
     public UnifyResponse<String> saveIndex(@RequestParam(value = "id") String id) {
         long[] realId = idObfuscator.decode(id, IdConfig.ARTICLE_ID);

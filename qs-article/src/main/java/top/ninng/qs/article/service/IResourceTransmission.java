@@ -30,7 +30,7 @@ public interface IResourceTransmission {
      * 接收资源
      *
      * @param authorizationCode 授权码
-     * @param mode              模式
+     * @param mode              模式（0：文章，1：文件）
      * @param title             标题
      * @param content           正文
      * @param tag               标签
@@ -43,5 +43,6 @@ public interface IResourceTransmission {
             String title,
             String content,
             ArrayList<String> tag,
-            Date date);
+            Date date,
+            String userId);
 }

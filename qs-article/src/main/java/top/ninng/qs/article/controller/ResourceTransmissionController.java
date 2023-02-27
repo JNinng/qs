@@ -1,12 +1,10 @@
 package top.ninng.qs.article.controller;
 
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import top.ninng.qs.article.service.IResourceTransmission;
 import top.ninng.qs.common.entity.UnifyResponse;
+import top.ninng.qs.common.utils.IdObfuscator;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,9 +19,11 @@ import java.util.Date;
 public class ResourceTransmissionController {
 
     IResourceTransmission iResourceTransmission;
+    IdObfuscator idObfuscator;
 
-    public ResourceTransmissionController(IResourceTransmission iResourceTransmission) {
+    public ResourceTransmissionController(IResourceTransmission iResourceTransmission, IdObfuscator idObfuscator) {
         this.iResourceTransmission = iResourceTransmission;
+        this.idObfuscator = idObfuscator;
     }
 
     @RequestMapping(value = "/push", method = RequestMethod.POST)
@@ -34,14 +34,15 @@ public class ResourceTransmissionController {
         return iResourceTransmission.push(authorizationCode, link, resourceId);
     }
 
-    @RequestMapping(value = "/receive", method = RequestMethod.POST)
+    @RequestMapping(value = "/receive/{id}", method = RequestMethod.POST)
     public UnifyResponse<String> receive(
             @RequestParam(value = "authorizationCode") String authorizationCode,
             @RequestParam(value = "mode") int mode,
             @RequestParam(value = "title") String title,
             @RequestParam(value = "content") String content,
             @RequestParam(value = "tag") ArrayList<String> tag,
-            @RequestParam(value = "dateTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date) {
-        return iResourceTransmission.receive(authorizationCode, mode, title, content, tag, date);
+            @RequestParam(value = "dateTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date,
+            @PathVariable(value = "id") String id) {
+        return iResourceTransmission.receive(authorizationCode, mode, title, content, tag, date, id);
     }
 }
