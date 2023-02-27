@@ -72,7 +72,7 @@ public interface FavoriteMapper {
      * @param userId    用户 id
      * @return 是否收藏
      */
-    int selectFavorite(Long articleId, Long userId);
+    Favorite selectFavorite(Long articleId, Long userId);
 
     /**
      * 查询用户收藏数量

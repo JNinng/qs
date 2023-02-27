@@ -65,8 +65,8 @@ public class FavoriteServiceImpl implements IFavoriteService {
 
     @Override
     public UnifyResponse<String> isFavorite(Long articleId, Long userId) {
-        int result = favoriteMapper.selectFavorite(articleId, userId);
-        if (result > 0) {
+        Favorite result = favoriteMapper.selectFavorite(articleId, userId);
+        if (EmptyCheck.notEmpty(result)) {
             return UnifyResponse.ok("已收藏！", null);
         }
         return UnifyResponse.fail("未收藏！", null);
@@ -78,13 +78,17 @@ public class FavoriteServiceImpl implements IFavoriteService {
         if (EmptyCheck.isEmpty(article)) {
             return UnifyResponse.fail("资源不存在！", null);
         }
-        Favorite favorite = new Favorite();
-        favorite.setArticleId(Math.toIntExact(articleId));
-        favorite.setUserId(Math.toIntExact(userId));
-        int insert = favoriteMapper.insert(favorite);
-        if (insert > 0) {
-            return UnifyResponse.ok("收藏成功！", null);
+        Favorite favorite = favoriteMapper.selectFavorite(articleId, userId);
+        if (EmptyCheck.isEmpty(favorite)) {
+            favorite = new Favorite();
+            favorite.setArticleId(Math.toIntExact(articleId));
+            favorite.setUserId(Math.toIntExact(userId));
+            int insert = favoriteMapper.insert(favorite);
+            if (insert > 0) {
+                return UnifyResponse.ok("收藏成功！", null);
+            }
+            return UnifyResponse.fail("收藏失败！", null);
         }
-        return UnifyResponse.fail("收藏失败！", null);
+        return UnifyResponse.fail("已收藏！", null);
     }
 }
