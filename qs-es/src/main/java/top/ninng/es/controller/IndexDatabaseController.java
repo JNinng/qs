@@ -32,6 +32,15 @@ public class IndexDatabaseController {
         return byId.orElse(null);
     }
 
+    @RequestMapping(value = "/getLikeArticle", method = RequestMethod.POST)
+    public UnifyResponse<ArrayList<ArticleDocument>> getLikeArticle(
+            @RequestParam(value = "key") String key,
+            @RequestParam(value = "articleId") String articleId,
+            @RequestParam(value = "page") int page,
+            @RequestParam(value = "pageSize") int pageSize) {
+        return indexDatabaseService.getLikeArticle(key, page, pageSize, articleId);
+    }
+
     @RequestMapping(value = "/save", method = RequestMethod.GET)
     public void save() {
         indexDatabaseService.save();
@@ -54,8 +63,7 @@ public class IndexDatabaseController {
     public UnifyResponse<ArrayList<ArticleDocument>> searchArticle(
             @RequestParam(value = "key") String key,
             @RequestParam(value = "page") int page,
-            @RequestParam(value = "pageSize") int pageSize
-    ) {
+            @RequestParam(value = "pageSize") int pageSize) {
         return indexDatabaseService.searchArticle(key, page, pageSize);
     }
 }

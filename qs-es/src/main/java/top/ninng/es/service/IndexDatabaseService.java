@@ -23,6 +23,14 @@ public interface IndexDatabaseService {
      */
     Optional<User> findById(String id);
 
+    /**
+     * 获取相似文章
+     *
+     * @param key
+     * @return
+     */
+    UnifyResponse<ArrayList<ArticleDocument>> getLikeArticle(String key, int page, int pageSize, String articleId);
+
     void save();
 
     void saveArticle(String id, String userId, String title, String content, Date createTime, Date updateTime);

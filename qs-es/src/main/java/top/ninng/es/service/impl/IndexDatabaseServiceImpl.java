@@ -2,6 +2,7 @@ package top.ninng.es.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MoreLikeThisQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.springframework.data.domain.PageRequest;
@@ -65,6 +66,63 @@ public class IndexDatabaseServiceImpl implements IndexDatabaseService {
     public void saveArticle(String id, String userId, String title, String content, Date createTime, Date updateTime) {
         ArticleDocument article = new ArticleDocument(id, userId, title, content, createTime, updateTime, 0);
         elasticsearchRestTemplate.save(article);
+    }
+
+    @Override
+    public UnifyResponse<ArrayList<ArticleDocument>> getLikeArticle(String key, int page, int pageSize,
+                                                                    String articleId) {
+        page = (page < 0) ? 0 : page;
+        pageSize = (pageSize <= 0) ? 10 : pageSize;
+        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
+        MoreLikeThisQueryBuilder likeThisQueryBuilder = QueryBuilders.moreLikeThisQuery(
+                new String[]{"content"},
+                new String[]{key},
+                new MoreLikeThisQueryBuilder.Item[]{new MoreLikeThisQueryBuilder.Item("article", articleId)});
+        PageRequest pageRequest = PageRequest.of(page, pageSize);
+        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+        if (EmptyCheck.notEmpty(key) && key.length() > 0) {
+            HighlightBuilder.Field titleField = new HighlightBuilder.Field("title")
+                    .preTags("<font color='red'>")
+                    .postTags("</font>");
+            HighlightBuilder.Field contentField = new HighlightBuilder.Field("content")
+                    .preTags("`")
+                    .postTags("`");
+            queryBuilder.withHighlightFields(titleField, contentField);
+
+            //            boolQueryBuilder.should(QueryBuilders.matchQuery("title", key));
+            //            boolQueryBuilder.should(QueryBuilders.matchQuery("content", key));
+            boolQueryBuilder.must(likeThisQueryBuilder);
+
+            queryBuilder.withQuery(boolQueryBuilder);
+            long count = elasticsearchRestTemplate.count(queryBuilder.build(), ArticleDocument.class);
+            queryBuilder.withPageable(pageRequest);
+            SearchHits<ArticleDocument> searchHits = elasticsearchRestTemplate.search(queryBuilder.build(),
+                    ArticleDocument.class);
+
+            ArrayList<ArticleDocument> articles = searchHits.getSearchHits().stream()
+                    .map(articleDocumentSearchHit -> {
+                        ArticleDocument document = new ArticleDocument();
+                        document.setId(articleDocumentSearchHit.getContent().getId());
+                        document.setUserId(articleDocumentSearchHit.getContent().getUserId());
+                        document.setCreateTime(articleDocumentSearchHit.getContent().getCreateTime());
+                        document.setUpdateTime(articleDocumentSearchHit.getContent().getUpdateTime());
+                        document.setCount(count);
+                        String content = articleDocumentSearchHit.getContent().getContent();
+                        document.setContent
+                                (content.substring(1, content.length() - 1)
+                                        .replaceAll("\\\\r\\\\n", "\r\n"));
+
+                        List<String> title = articleDocumentSearchHit.getHighlightFields().get("title");
+                        if (EmptyCheck.notEmpty(title)) {
+                            document.setTitle(String.join("", title));
+                        } else {
+                            document.setTitle(articleDocumentSearchHit.getContent().getTitle());
+                        }
+                        return document;
+                    }).collect(Collectors.toCollection(ArrayList::new));
+            return UnifyResponse.ok(articles);
+        }
+        return UnifyResponse.fail();
     }
 
     @Override
