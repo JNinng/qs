@@ -42,4 +42,13 @@ public interface IndexDatabaseService {
      * @return
      */
     UnifyResponse<ArrayList<ArticleDocument>> searchArticle(String key, int page, int pageSize);
+
+    /**
+     * 更新文章文档信息
+     *
+     * @param articleId
+     * @param count
+     * @return
+     */
+    UnifyResponse<String> updateArticleCount(String articleId, int count);
 }

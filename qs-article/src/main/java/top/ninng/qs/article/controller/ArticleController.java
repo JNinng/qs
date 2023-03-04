@@ -4,6 +4,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import top.ninng.qs.article.config.IdConfig;
 import top.ninng.qs.article.entity.*;
+import top.ninng.qs.article.service.IArticleAmendmentService;
 import top.ninng.qs.article.service.IArticleService;
 import top.ninng.qs.article.service.IFavoriteService;
 import top.ninng.qs.article.utils.Ip;
@@ -28,12 +29,15 @@ public class ArticleController {
 
     IArticleService iArticleService;
     IFavoriteService iFavoriteService;
+    IArticleAmendmentService iArticleAmendmentService;
     IdObfuscator idObfuscator;
 
     public ArticleController(IArticleService iArticleService, IFavoriteService iFavoriteService,
+                             IArticleAmendmentService iArticleAmendmentService,
                              IdObfuscator idObfuscator) {
         this.iArticleService = iArticleService;
         this.iFavoriteService = iFavoriteService;
+        this.iArticleAmendmentService = iArticleAmendmentService;
         this.idObfuscator = idObfuscator;
         System.out.println(idObfuscator.encode(1, IdConfig.ARTICLE_ID));
     }
@@ -75,6 +79,22 @@ public class ArticleController {
             return UnifyResponse.fail("id 错误！", null);
         }
         return iFavoriteService.deleteFavorite(articleId[0], userId);
+    }
+
+    @RequestMapping(value = "/getArticleAmendmentInfo", method = RequestMethod.POST)
+    public UnifyResponse<ArticleAmendmentInfo> getArticleAmendmentInfo(
+            @RequestParam(value = "page") int page,
+            @RequestParam(value = "pageSize") int pageSize,
+            HttpServletRequest request) {
+        long[] loginId = new long[]{0L};
+        String userId = request.getHeader("user_id");
+        if (EmptyCheck.notEmpty(userId)) {
+            loginId[0] = Long.parseLong(userId);
+            if (loginId[0] == 1) {
+                return iArticleAmendmentService.getArticleAmendmentInfo(page, pageSize);
+            }
+        }
+        return UnifyResponse.fail("id 错误！", null);
     }
 
     /**
@@ -280,6 +300,13 @@ public class ArticleController {
         return iFavoriteService.setFavorite(articleId[0], userId);
     }
 
+    @RequestMapping(value = "/submitAmendmentSuggest", method = RequestMethod.POST)
+    public UnifyResponse<String> submitAmendmentSuggest(
+            @RequestParam(value = "articleId") String[] articleId,
+            @RequestParam(value = "info") String info) {
+        return iArticleAmendmentService.submitAmendmentSuggest(articleId, info);
+    }
+
     /**
      * 根据混淆 id 更新文章
      * role:admin
@@ -310,6 +337,25 @@ public class ArticleController {
                     // 获取 ip
                     Ip.getIpAddr(request));
             //                }
+        }
+        return UnifyResponse.fail("id 错误！", null);
+    }
+
+    @RequestMapping(value = "/amendment", method = RequestMethod.POST)
+    public UnifyResponse<String> updateArticleCount(
+            @RequestParam(value = "id") long id,
+            @RequestParam(value = "articleId") String articleId,
+            @RequestParam(value = "mode") int mode,
+            @RequestParam(value = "value") int value,
+            @RequestParam(value = "info") String info,
+            HttpServletRequest request) {
+        long[] loginId = new long[]{0L};
+        String userId = request.getHeader("user_id");
+        if (EmptyCheck.notEmpty(userId)) {
+            loginId[0] = Long.parseLong(userId);
+            if (loginId[0] == 1) {
+                return iArticleAmendmentService.amendment(id, articleId, mode, value, info);
+            }
         }
         return UnifyResponse.fail("id 错误！", null);
     }

@@ -51,24 +51,6 @@ public class IndexDatabaseServiceImpl implements IndexDatabaseService {
     }
 
     @Override
-    public void save() {
-        userRepository.save(new User("1", "John名字"));
-        userRepository.save(new User("2", "天涯共此时"));
-        userRepository.save(new User("3", "海内存知己天涯若比邻"));
-        userRepository.save(new User("4", "半夜睡不着觉把心情哼成歌"));
-        userRepository.save(new User("5", "半夜睡不着觉把心情哼成歌"));
-        userRepository.save(new User("6", "半夜睡不着觉把心情哼成歌"));
-        userRepository.save(new User("7", "半夜睡不着觉把心情哼成歌"));
-        userRepository.save(new User("8", "半夜睡不着觉把心情哼成歌"));
-    }
-
-    @Override
-    public void saveArticle(String id, String userId, String title, String content, Date createTime, Date updateTime) {
-        ArticleDocument article = new ArticleDocument(id, userId, title, content, createTime, updateTime, 0);
-        elasticsearchRestTemplate.save(article);
-    }
-
-    @Override
     public UnifyResponse<ArrayList<ArticleDocument>> getLikeArticle(String key, int page, int pageSize,
                                                                     String articleId) {
         page = (page < 0) ? 0 : page;
@@ -126,6 +108,24 @@ public class IndexDatabaseServiceImpl implements IndexDatabaseService {
     }
 
     @Override
+    public void save() {
+        userRepository.save(new User("1", "John名字"));
+        userRepository.save(new User("2", "天涯共此时"));
+        userRepository.save(new User("3", "海内存知己天涯若比邻"));
+        userRepository.save(new User("4", "半夜睡不着觉把心情哼成歌"));
+        userRepository.save(new User("5", "半夜睡不着觉把心情哼成歌"));
+        userRepository.save(new User("6", "半夜睡不着觉把心情哼成歌"));
+        userRepository.save(new User("7", "半夜睡不着觉把心情哼成歌"));
+        userRepository.save(new User("8", "半夜睡不着觉把心情哼成歌"));
+    }
+
+    @Override
+    public void saveArticle(String id, String userId, String title, String content, Date createTime, Date updateTime) {
+        ArticleDocument article = new ArticleDocument(id, userId, title, content, createTime, updateTime, 0);
+        elasticsearchRestTemplate.save(article);
+    }
+
+    @Override
     public UnifyResponse<ArrayList<ArticleDocument>> searchArticle(String key, int page, int pageSize) {
         page = (page < 0) ? 0 : page;
         pageSize = (pageSize <= 0) ? 10 : pageSize;
@@ -142,7 +142,8 @@ public class IndexDatabaseServiceImpl implements IndexDatabaseService {
             queryBuilder.withHighlightFields(titleField, contentField);
 
             boolQueryBuilder.should(QueryBuilders.matchQuery("title", key));
-            boolQueryBuilder.should(QueryBuilders.matchQuery("content", key));
+            boolQueryBuilder.must(QueryBuilders.matchQuery("content", key));
+            boolQueryBuilder.should(QueryBuilders.rangeQuery("count").lt(10));
 
             queryBuilder.withQuery(boolQueryBuilder);
             long count = elasticsearchRestTemplate.count(queryBuilder.build(), ArticleDocument.class);
@@ -183,5 +184,16 @@ public class IndexDatabaseServiceImpl implements IndexDatabaseService {
             return UnifyResponse.ok(articles);
         }
         return UnifyResponse.fail();
+    }
+
+    @Override
+    public UnifyResponse<String> updateArticleCount(String articleId, int count) {
+        ArticleDocument articleDocument = elasticsearchRestTemplate.get(articleId, ArticleDocument.class,
+                IndexCoordinates.of("article"));
+        if (EmptyCheck.notEmpty(articleDocument)) {
+            articleDocument.setCount(count);
+            elasticsearchRestTemplate.save(articleDocument);
+        }
+        return UnifyResponse.ok("已更新！", null);
     }
 }

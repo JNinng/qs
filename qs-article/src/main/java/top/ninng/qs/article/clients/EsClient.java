@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import top.ninng.qs.common.entity.UnifyResponse;
 
 import java.util.Date;
 
@@ -28,4 +29,9 @@ public interface EsClient {
             @RequestParam(value = "createTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date createTime,
             @RequestParam(value = "updateTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date updateTime
     );
+
+    @RequestMapping(value = "/es/index/updateArticleCount", method = RequestMethod.POST)
+    UnifyResponse<String> updateArticleCount(
+            @RequestParam(value = "articleId") String articleId,
+            @RequestParam(value = "count") int count);
 }

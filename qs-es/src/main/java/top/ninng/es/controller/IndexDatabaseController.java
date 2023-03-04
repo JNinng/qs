@@ -66,4 +66,11 @@ public class IndexDatabaseController {
             @RequestParam(value = "pageSize") int pageSize) {
         return indexDatabaseService.searchArticle(key, page, pageSize);
     }
+
+    @RequestMapping(value = "/updateArticleCount", method = RequestMethod.POST)
+    public UnifyResponse<String> updateArticleCount(
+            @RequestParam(value = "articleId") String articleId,
+            @RequestParam(value = "count") int count) {
+        return indexDatabaseService.updateArticleCount(articleId, count);
+    }
 }
