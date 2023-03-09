@@ -216,9 +216,16 @@ public class ArticleController {
         return UnifyResponse.fail("id 错误！", null);
     }
 
+    /**
+     * @param mode (0):日榜,(1):月榜,(2):年榜单,
+     * @param top
+     * @return
+     */
     @RequestMapping(value = "/hot", method = RequestMethod.POST)
-    public UnifyResponse<ArticleIdListPageResult> getHot() {
-        return iArticleService.getHot();
+    public UnifyResponse<ArticleIdListPageResult> getHot(
+            @RequestParam(value = "mode") int mode,
+            @RequestParam(value = "top") int top) {
+        return iArticleService.getHot(mode, top);
     }
 
     /**

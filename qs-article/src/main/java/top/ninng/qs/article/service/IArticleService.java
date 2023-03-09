@@ -90,7 +90,7 @@ public interface IArticleService {
      *
      * @return
      */
-    UnifyResponse<ArticleIdListPageResult> getHot();
+    UnifyResponse<ArticleIdListPageResult> getHot(int mode, int top);
 
     /**
      * 查询分页信息

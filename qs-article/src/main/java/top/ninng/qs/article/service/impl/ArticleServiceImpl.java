@@ -54,10 +54,13 @@ public class ArticleServiceImpl implements IArticleService {
                 }
                 redisTemplate.opsForValue().set(visitor, true, 60, TimeUnit.SECONDS);
                 String date = new SimpleDateFormat("yyyyMMdd").format(new Date(System.currentTimeMillis()));
+                String month = new SimpleDateFormat("yyyyMM").format(new Date(System.currentTimeMillis()));
                 double log = Math.log(time / 60.0 + 1);
                 System.out.println("score: " + log);
                 String scorePool = "qs:score:article:day:" + date;
+                String monthScorePool = "qs:score:article:month:" + month;
                 redisTemplate.opsForZSet().incrementScore(scorePool, id, log);
+                redisTemplate.opsForZSet().incrementScore(monthScorePool, id, log);
                 // 加分后增加资源访问量
                 Article article = articleMapper.selectByPrimaryKey(id);
                 article.setPageView(article.getPageView() + 1);
@@ -229,11 +232,29 @@ public class ArticleServiceImpl implements IArticleService {
     }
 
     @Override
-    public UnifyResponse<ArticleIdListPageResult> getHot() {
-        String date = new SimpleDateFormat("yyyyMMdd").format(new Date(System.currentTimeMillis()));
-        String scorePool = "qs:score:article:day:" + date;
+    public UnifyResponse<ArticleIdListPageResult> getHot(int mode, int top) {
+        String date;
+        String scorePool = "";
         ArrayList<ArticleIdAndTitle> list = new ArrayList<>();
-        Set<Object> range = redisTemplate.opsForZSet().range(scorePool, 0, 10);
+        Set<Object> range = null;
+        switch (mode) {
+            case 0:
+                date = new SimpleDateFormat("yyyyMMdd").format(new Date(System.currentTimeMillis()));
+                scorePool = "qs:score:article:day:" + date;
+                range = redisTemplate.opsForZSet().reverseRange(scorePool, 0, top - 1);
+                if (EmptyCheck.notEmpty(range) && range.size() > 0) {
+                    break;
+                }
+            case 1:
+                date = new SimpleDateFormat("yyyyMM").format(new Date(System.currentTimeMillis()));
+                scorePool = "qs:score:article:month:" + date;
+                range = redisTemplate.opsForZSet().reverseRange(scorePool, 0, top - 1);
+                if (EmptyCheck.notEmpty(range) && range.size() > 0) {
+                    break;
+                }
+            default:
+                return UnifyResponse.fail("暂无榜单信息 ！", null);
+        }
         if (EmptyCheck.notEmpty(range) && range.size() > 0) {
             range.forEach(o -> {
                 ArticleIdAndTitle articleIdAndTitle =
