@@ -11,6 +11,12 @@ import top.ninng.qs.common.entity.UnifyResponse;
 import top.ninng.qs.common.utils.EmptyCheck;
 import top.ninng.qs.common.utils.IdObfuscator;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,6 +24,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -34,6 +42,8 @@ public class ArticleServiceImpl implements IArticleService {
     EsClient esClient;
     RedisTemplate<Object, Object> redisTemplate;
     IdObfuscator idObfuscator;
+    String reg = "[a-zA-z]+://[^\\s]*";
+    Pattern pattern = Pattern.compile(reg);
 
     public ArticleServiceImpl(ArticleMapper articleMapper, EsClient esClient,
                               RedisTemplate<Object, Object> redisTemplate, IdObfuscator idObfuscator) {
@@ -88,6 +98,30 @@ public class ArticleServiceImpl implements IArticleService {
         // id 混淆处理
         article.setObfuscatorId(idObfuscator.encode(article.getId(), IdConfig.ARTICLE_ID));
         article.setObfuscatorUserId(idObfuscator.encode(article.getUserId(), IdConfig.USER_ID));
+        String content = article.getContent();
+        Matcher matcher = pattern.matcher(article.getContent());
+        for (int i = 0; matcher.find(); i++) {
+            String key = matcher.group();
+            try {
+                URL url = new URL(key);
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.connect();
+                InputStream inputStream = urlConnection.getInputStream();
+                BufferedReader buffer = new BufferedReader(new InputStreamReader(inputStream));
+                StringBuilder bs = new StringBuilder();
+                String l = null;
+                while ((l = buffer.readLine()) != null) {
+                    bs.append(l).append("/n");
+                }
+                String response = bs.toString();
+                if (response.indexOf("分享的文件已经被删除了") >= 0) {
+                    content = content.replaceAll(key, "~~" + key + "~~");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        article.setContent(content);
         return UnifyResponse.ok(article);
     }
 
