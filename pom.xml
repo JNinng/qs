@@ -10,9 +10,14 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>qs-user</module>
+        <module>qs-article</module>
         <module>qs-consumer</module>
         <module>qs-gateway</module>
         <module>qs-es</module>
+        <module>common</module>
+        <module>qs-comment</module>
+        <module>qs-admin</module>
+        <module>qs-file</module>
     </modules>
 
     <parent>
